@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="112dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bLight"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="25dp"
+                android:autoSizeTextType="uniform"
+                android:background="@drawable/round_button_off"
+                android:padding="15dp"
+                android:text="@string/light_sensor_off"
+                android:textAllCaps="false" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bTemp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="35dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginRight="40dp"
+                android:autoSizeTextType="uniform"
+                android:background="@drawable/round_button_off"
+                android:padding="15dp"
+                android:text="Temp OFF"
+                android:textAllCaps="false" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bHum"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="32dp"
+                android:autoSizeTextType="uniform"
+                android:background="@drawable/round_button_off"
+                android:padding="10dp"
+                android:text="Hum OFF"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/static1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Light sensor measurements:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/lightMeasurement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Light sensor is OFF" />
+
+        <TextView
+            android:id="@+id/static2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Temperature sensor measurements:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tempMeasurement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Temperature sensor OFF" />
+
+        <TextView
+            android:id="@+id/static3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Humidity sensor measurements:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/humMeasurement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="25dp"
+            android:text="Humidity sensor is OFF" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Select Greenhouse to publish:" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation = "horizontal">
+
+            <RadioButton
+                android:id="@+id/buttonA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="OnRadioButtonClicked"
+                android:text="A" />
+
+            <RadioButton
+                android:id="@+id/buttonB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="OnRadioButtonClicked"
+                android:text="B" />
+
+            <RadioButton
+                android:id="@+id/buttonC"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="OnRadioButtonClicked"
+                android:text="C" />
+
+            <RadioButton
+                android:id="@+id/buttonD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="OnRadioButtonClicked"
+                android:text="D" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/bPublish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:text="Publish"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:backgroundTint="#4CAF50" />
+
+
+    </LinearLayout>
+</ScrollView>

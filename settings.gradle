@@ -1,0 +1,3 @@
+rootProject.name = "mdprojectsensors"
+include ':app'
+include ':org.eclipse.paho.android.service'
