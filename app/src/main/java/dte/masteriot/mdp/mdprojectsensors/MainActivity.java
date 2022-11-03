@@ -1,345 +1,169 @@
+// Parts of the code of this example app have ben taken from:
+// https://enoent.fr/posts/recyclerview-basics/
+// https://developer.android.com/guide/topics/ui/layout/recyclerview
+
 package dte.masteriot.mdp.mdprojectsensors;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.selection.ItemKeyProvider;
+import androidx.recyclerview.selection.SelectionTracker;
+import androidx.recyclerview.selection.StorageStrategy;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Random;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    Calendar calendar;
-    SimpleDateFormat dateFormat1 = new SimpleDateFormat("H");
-    SimpleDateFormat dateFormat2 = new SimpleDateFormat("M");
-    SimpleDateFormat dateFormat3 = new SimpleDateFormat("s");
-    
-    Button bLight;
-    Button bTemp;
-    Button bHumidity;
-    
+    private static final String TAG = "ListOfItems, MainActivity";
 
-    TextView tvSensorValue;
-    TextView tvTempValue;
-    TextView tvHumidityValue;
+    // App-specific dataset:
+    private static final List<Item> listofitems = new ArrayList<>();
+    private static boolean listofitemsinitialized = false;
 
+    private RecyclerView recyclerView;
+    private MyAdapter recyclerViewAdapter;
+    private SelectionTracker tracker;
+    private MyOnItemActivatedListener onItemActivatedListener;
+    private Object next;
 
-    private SensorManager sensorManager;
-    private Sensor lightSensor;
+    ExecutorService es; //[MGM] Background
 
-
-    boolean humiditySensorIsActive;
-    boolean temperatureSensorIsActive;
-    boolean lightSensorIsActive;
-    boolean GreenhouseSelected;
-
-    String lightMeasurement = "0.0";
-    String temperatureMeasurement = "0.0";
-    String humidityMeasurement = "0.0";
-    MQTTClient myMQTT;
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        myMQTT = new MQTTClient(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button bPublish = findViewById(R.id.bPublish);
-        bPublish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!myMQTT.mqttAndroidClient.isConnected()){
-                    myMQTT.SendNotification("No connection");
-                } else if (!GreenhouseSelected) {
-                            myMQTT.SendNotification("Please select a Greenhouse");
-                        } else {
-                                if (lightSensorIsActive) {
-                                    myMQTT.publishTopic = myMQTT.publishTopic + "/Light";
-                                    try {
-                                        myMQTT.publishMessage(lightMeasurement);
-                                    } catch (MqttException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                if (temperatureSensorIsActive) {
-                                        myMQTT.publishTopic = myMQTT.publishTopic + "/Temperature";
-                                        try {
-                                            myMQTT.publishMessage(temperatureMeasurement);
-                                        } catch (MqttException e) {
-                                           e.printStackTrace();
-                                        }
-                                }
-                                if (humiditySensorIsActive) {
-                                    myMQTT.publishTopic = myMQTT.publishTopic + "/Humidity";
-                                    try {
-                                        myMQTT.publishMessage(humidityMeasurement);
-                                    } catch (MqttException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                if(!(humiditySensorIsActive | temperatureSensorIsActive | lightSensorIsActive)){
-                                    myMQTT.SendNotification("No sensor ON");
-                                }
-                            }
-            }
-        });
 
-        myMQTT.clientId = "id";
-        myMQTT.mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), myMQTT.serverUri, myMQTT.clientId);
-        myMQTT.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
+        // Initialize the list of items (the dataset):
+        initListOfItems();
 
-                if (reconnect) {
-                    myMQTT.SendNotification("Reconnected to : " + serverURI);
-                } else {
-                    myMQTT.SendNotification("Connected to: " + serverURI);
-                }
-            }
+        // Prepare the RecyclerView:
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerViewAdapter = new MyAdapter(this, listofitems);
+        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-            @Override
-            public void connectionLost(Throwable cause) {
-                myMQTT.SendNotification("The Connection was lost.");
-            }
+        // Choose the layout manager to be set.
+        // some options for the layout manager:  GridLayoutManager, LinearLayoutManager, StaggeredGridLayoutManager
+        // initially, a linear layout is chosen:
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                myMQTT.SendNotification("Incoming message: " + new String(message.getPayload()));
-            }
+        // Selection tracker (to allow for selection of items):
+        onItemActivatedListener = new MyOnItemActivatedListener(this, recyclerViewAdapter);
+        tracker = new SelectionTracker.Builder<>(
+                "my-selection-id",
+                recyclerView,
+                new MyItemKeyProvider(ItemKeyProvider.SCOPE_MAPPED, recyclerViewAdapter),
+//                new StableIdKeyProvider(recyclerView), // This caused the app to crash on long clicks
+                new MyItemDetailsLookup(recyclerView),
+                StorageStrategy.createLongStorage())
+                .withOnItemActivatedListener(onItemActivatedListener)
+                .build();
+        recyclerViewAdapter.setSelectionTracker(tracker);
 
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-
-        MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
-        mqttConnectOptions.setAutomaticReconnect(true);
-        mqttConnectOptions.setCleanSession(false);
-
-        //Last Will message
-        mqttConnectOptions.setWill(myMQTT.publishTopic,myMQTT.LWillmessage.getBytes(),1,false);
-
-        //SendNotification("Connecting to " + serverUri);
-        try {
-            myMQTT.mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
-                    disconnectedBufferOptions.setBufferEnabled(true);
-                    disconnectedBufferOptions.setBufferSize(100);
-                    disconnectedBufferOptions.setPersistBuffer(false);
-                    disconnectedBufferOptions.setDeleteOldestMessages(false);
-                    myMQTT.mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    myMQTT.SendNotification("Failed to connect to: " + myMQTT.serverUri);
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        lightSensorIsActive = false;
-        temperatureSensorIsActive = false;
-        humiditySensorIsActive = false;
-        GreenhouseSelected = false;
-
-
-        // Get the references to the UI:
-        bLight = findViewById(R.id.bLight); // button to start/stop sensor's readings
-        tvSensorValue = findViewById(R.id.lightMeasurement); // sensor's values
-
-        bTemp = findViewById(R.id.bTemp);
-        tvTempValue = findViewById(R.id.tempMeasurement);
-
-
-        bHumidity = findViewById(R.id.bHum);
-        tvHumidityValue = findViewById(R.id.humMeasurement);
-
-
-
-        // Get the reference to the sensor manager and the sensor:
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        // Obtain the reference to the default light sensor of the device:
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-
-        
-
-        // Listener for the button:
-        bLight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (lightSensorIsActive) {
-                    // unregister listener and make the appropriate changes in the UI:
-                    sensorManager.unregisterListener(MainActivity.this, lightSensor);
-                    bLight.setText(R.string.light_sensor_off);
-                    bLight.setBackground(getResources().getDrawable(R.drawable.round_button_off));
-                    tvSensorValue.setText("Light sensor is OFF");
-                    lightSensorIsActive = false;
-                } else {
-                    // register listener and make the appropriate changes in the UI:
-                    sensorManager.registerListener(MainActivity.this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-                    bLight.setText(R.string.light_sensor_on);
-                    bLight.setBackground(getResources().getDrawable(R.drawable.round_button_on));
-                    tvSensorValue.setText("Waiting for first light sensor value");
-                    lightSensorIsActive = true;
-                }
-            }
-        });
-        // Listener for the button2:
-        bTemp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (temperatureSensorIsActive) {
-                    bTemp.setText("Temp OFF");
-                    bTemp.setBackground(getResources().getDrawable(R.drawable.round_button_off));
-                    tvTempValue.setText("Temperature sensor is OFF");
-
-                    temperatureSensorIsActive = false;
-                } else {
-                    // register listener and make the appropriate changes in the UI
-                    bTemp.setText("Temp ON");
-                    bTemp.setBackground(getResources().getDrawable(R.drawable.round_button_on));
-                    TemperatureEmulator();
-                    tvTempValue.setText(temperatureMeasurement);
-                    temperatureSensorIsActive = true;
-                }
-            }
-        });
-
-        // Listener for the button3:
-        bHumidity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (humiditySensorIsActive) {
-                    // unregister listener and make the appropriate changes in the UI:
-                    bHumidity.setText("Hum OFF");
-                    bHumidity.setBackground(getResources().getDrawable(R.drawable.round_button_off));
-                    tvHumidityValue.setText("Humidity Sensor is OFF");
-                    humiditySensorIsActive = false;
-                } else {
-                    // register listener and make the appropriate changes in the UI:
-                    bHumidity.setText("Hum ON");
-                    bHumidity.setBackground(getResources().getDrawable(R.drawable.round_button_on));
-                    HumidityEmulator();
-                    tvHumidityValue.setText(humidityMeasurement);
-                    humiditySensorIsActive = true;
-                }
-            }
-        });
-
-
-
-
-    }
-    public void OnRadioButtonClicked(View view) {
-        // Is the button now checked?
-         GreenhouseSelected = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch (view.getId()) {
-            case R.id.buttonA:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseA";
-                break;
-            case R.id.buttonB:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseB";
-                break;
-
-            case R.id.buttonC:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseC";
-                break;
-
-            case R.id.buttonD:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseD";
-                break;
+        if (savedInstanceState != null) {
+            // Restore state related to selections previously made
+            tracker.onRestoreInstanceState(savedInstanceState);
         }
     }
-
-
-
-// to store the values of the variables that keep the status of each sensor
-    @Override
-    protected void onStop(){
-        super.onStop();
-
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("lightSensorIsActive", lightSensorIsActive);
-        editor.putBoolean("temperatureSensorIsActive", temperatureSensorIsActive);
-        editor.putBoolean("stepSensorIsActive", humiditySensorIsActive);
-        editor.apply();
-    }
-
-    
-
-
-    @SuppressLint("DefaultLocale")
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        lightMeasurement = String.format("%.01f",sensorEvent.values[0]);
-        tvSensorValue.setText(lightMeasurement);
-    }
-
-    
-    public void TemperatureEmulator(){ //Emulates the temperature depending on the Hour and Month
-        calendar = Calendar.getInstance();
-        float month = Float.parseFloat(dateFormat2.format(calendar.getTime()));
-        float aux = (float)(new Random().nextInt(11) - 1)/10;
-        int base;
-        if((month > 4.0) &(month <11)){
-            base = 21;
-        } else{
-            base = 12;
-        }
-        float hour = Float.parseFloat(dateFormat1.format(calendar.getTime()));
-        if((8.0 < hour) & (hour < 20.0) ){// Day-time hours
-            base = base + new Random().nextInt(11) - new Random().nextInt(5) ;//[18- 30 ºC] and [9-21 ºC]
-
-        } else {
-            base = base + new Random().nextInt(4) - new Random().nextInt(7);//[ 16- 23ºC] and [ 7 and 14 ºC]
-        }
-        temperatureMeasurement = String.valueOf((float)base + aux);
-    }
-
-    @SuppressLint("DefaultLocale")
-    public void HumidityEmulator(){
-        calendar = Calendar.getInstance();
-        float seconds = Float.parseFloat(dateFormat3.format(calendar.getTime()));
-        humidityMeasurement = String.format("%.01f",(75.0 + seconds/10));
-    }
-
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-        // In this app we do nothing if sensor's accuracy changes
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        tracker.onSaveInstanceState(outState); // Save state about selections.
     }
+
+    // ------ Initialization of the dataset ------ //
+
+    private void initListOfItems () {
+
+        listofitems.add(new Item("Burrito Tierra", "https://www.tierraburritos.com/", "Mejicano" , (long) 0 , R.drawable.tierra, true ));
+        listofitems.add(new Item("80 grados", "https://ochentagrados.com/", "Tradicional" , (long) 1 , R.drawable._0grados , false ));
+        listofitems.add(new Item("La musa", "https://grupolamusa.com/restaurante-musa-malasana/", "Tapas" , (long) 2 , R.drawable.lamusa , true ));
+        listofitems.add(new Item("La mejor hamburguesa", "https://lamejorhamburguesa.com/", "Hamburguesa" , (long) 3 , R.drawable.lamejorhamaburguesa , false ));
+        listofitems.add(new Item("Sublime", "https://www.sublimeworldrestaurant.com//", "Hamburguesa" , (long) 4 , R.drawable.sublime, true ));
+        listofitems.add(new Item("El 2 de Fortuny", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "Tradicional" , (long) 5 , R.drawable.el2defortuny , true ));
+
+        listofitemsinitialized = true;
+
+
+
+
+        // Populate the list of items if not done before:
+        /*final int ITEM_COUNT = 50;
+        if (listofitemsinitialized == false) {
+            for (int i = 0; i < ITEM_COUNT; ++i) {
+                listofitems.add(new Item("Item " + i, "This is the item number " + i, (long) i));
+            }
+            listofitemsinitialized = true;
+        }*/
+
+    }
+
+    // ------ Buttons' on-click listeners ------ //
+
+    public void listLayout(View view) {
+        // Button to see in a linear fashion has been clicked:
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void gridLayout(View view) {
+        // Button to see in a grid fashion has been clicked:
+        //recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+
+        Intent i = new Intent(MainActivity.this, ThirdActivity.class);
+        startActivity(i);
+    }
+
+    public void seeCurrentSelection(View view) {
+        // Button "see current selection" has been clicked:
+
+        Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
+        // This iterator allows to navigate through the keys of the currently selected items.
+        // Complete info on getSelection():
+        // https://developer.android.com/reference/androidx/recyclerview/selection/SelectionTracker#getSelection()
+        // Complete info on class Selection (getSelection() returns an object of this class):
+        // https://developer.android.com/reference/androidx/recyclerview/selection/Selection
+
+        String text = "";
+        while (iteratorSelectedItemsKeys.hasNext()) {
+            text += iteratorSelectedItemsKeys.next().toString();
+            if (iteratorSelectedItemsKeys.hasNext()) {
+                text += ", ";
+            }
+        }
+        text = "Keys of currently selected items = \n" + text;
+        Intent i = new Intent(this, SecondActivity.class);
+        i.putExtra("text", text);
+        startActivity(i);
+    }
+
+    public void Eliminate(View view) {
+        // Button "see current selection" has been clicked:
+
+        Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
+
+        while (iteratorSelectedItemsKeys.hasNext()) {
+            recyclerViewAdapter.removeItem(Long.parseLong(iteratorSelectedItemsKeys.next().toString()));
+            //recyclerViewAdapter.notifyItemRemoved(Integer.parseInt(iteratorSelectedItemsKeys.next().toString()));
+        }
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    /*
+    public void buttonAsyncListener(View view) {
+        //Log.d(logTag, "Scheduling new task in background thread");
+        es.execute(new LengthyTask());
+    }
+     */
 
 }

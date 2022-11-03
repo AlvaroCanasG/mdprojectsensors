@@ -11,4 +11,6 @@
     <color name="green">#8FBC8F</color>
     <color name="teal_200">#FF8C00</color>
     <color name="teal_700">#8FBC8F</color>
+    <color name="grey">#CCCCCC</color>
+
 </resources>

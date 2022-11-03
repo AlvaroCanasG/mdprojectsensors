@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShowLightSensor">
-        <activity android:name="dte.masteriot.mdp.mdprojectsensors.MainActivity">
+        <activity android:name="dte.masteriot.mdp.mdprojectsensors.SecondActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
