@@ -23,6 +23,15 @@
     <string name="D_light">GreenHouseD/Light</string>
     <string name="D_Temperature">GreenHouseD/Temperature</string>
     <string name="D_Humidity">GreenHouseD/Humidity</string>
-
+    <string-array name="Greenhouses_array">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+    </string-array>
 
 </resources>
