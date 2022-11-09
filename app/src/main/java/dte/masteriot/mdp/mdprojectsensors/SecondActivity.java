@@ -9,8 +9,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
 
-public class SecondActivity extends AppCompatActivity implements SensorEventListener {
+public class SecondActivity extends AppCompatActivity implements SensorEventListener, AdapterView.OnItemSelectedListener {
     Calendar calendar;
     SimpleDateFormat dateFormat1 = new SimpleDateFormat("H");
     SimpleDateFormat dateFormat2 = new SimpleDateFormat("M");
@@ -180,8 +182,11 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         bHumidity = findViewById(R.id.bHum);
         tvHumidityValue = findViewById(R.id.humMeasurement);
 
-
-
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
         // Get the reference to the sensor manager and the sensor:
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         // Obtain the reference to the default light sensor of the device:
@@ -196,16 +201,12 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                 if (lightSensorIsActive) {
                     // unregister listener and make the appropriate changes in the UI:
                     sensorManager.unregisterListener(SecondActivity.this, lightSensor);
-                    bLight.setText(R.string.light_sensor_off);
-                    bLight.setBackground(getResources().getDrawable(R.drawable.round_button_off));
-                    tvSensorValue.setText("Light sensor is OFF");
+                    tvSensorValue.setText("- - -");
                     lightSensorIsActive = false;
                 } else {
                     // register listener and make the appropriate changes in the UI:
                     sensorManager.registerListener(SecondActivity.this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-                    bLight.setText(R.string.light_sensor_on);
-                    bLight.setBackground(getResources().getDrawable(R.drawable.round_button_on));
-                    tvSensorValue.setText("Waiting for first light sensor value");
+                    tvSensorValue.setText("- - -");
                     lightSensorIsActive = true;
                 }
             }
@@ -215,17 +216,12 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
             @Override
             public void onClick(View view) {
                 if (temperatureSensorIsActive) {
-                    bTemp.setText("Temp OFF");
-                    bTemp.setBackground(getResources().getDrawable(R.drawable.round_button_off));
-                    tvTempValue.setText("Temperature sensor is OFF");
-
+                    tvTempValue.setText("- - -");
                     temperatureSensorIsActive = false;
                 } else {
                     // register listener and make the appropriate changes in the UI
-                    bTemp.setText("Temp ON");
-                    bTemp.setBackground(getResources().getDrawable(R.drawable.round_button_on));
                     TemperatureEmulator();
-                    tvTempValue.setText(temperatureMeasurement);
+                    tvTempValue.setText(temperatureMeasurement+"ºC");
                     temperatureSensorIsActive = true;
                 }
             }
@@ -237,16 +233,12 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
             public void onClick(View view) {
                 if (humiditySensorIsActive) {
                     // unregister listener and make the appropriate changes in the UI:
-                    bHumidity.setText("Hum OFF");
-                    bHumidity.setBackground(getResources().getDrawable(R.drawable.round_button_off));
-                    tvHumidityValue.setText("Humidity Sensor is OFF");
+                    tvHumidityValue.setText("- - -");
                     humiditySensorIsActive = false;
                 } else {
                     // register listener and make the appropriate changes in the UI:
-                    bHumidity.setText("Hum ON");
-                    bHumidity.setBackground(getResources().getDrawable(R.drawable.round_button_on));
                     HumidityEmulator();
-                    tvHumidityValue.setText(humidityMeasurement);
+                    tvHumidityValue.setText(humidityMeasurement+"%");
                     humiditySensorIsActive = true;
                 }
             }
@@ -256,32 +248,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
 
     }
-    public void OnRadioButtonClicked(View view) {
-        // Is the button now checked?
-         GreenhouseSelected = ((RadioButton) view).isChecked();
 
-        // Check which radio button was clicked
-        switch (view.getId()) {
-            case R.id.buttonA:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseA";
-                break;
-            case R.id.buttonB:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseB";
-                break;
-
-            case R.id.buttonC:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseC";
-                break;
-
-            case R.id.buttonD:
-                if (GreenhouseSelected)
-                    myMQTT.publishTopic = "GreenhouseD";
-                break;
-        }
-    }
 
 
 
@@ -305,7 +272,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         lightMeasurement = String.format("%.01f",sensorEvent.values[0]);
-        tvSensorValue.setText(lightMeasurement);
+        tvSensorValue.setText(lightMeasurement+"%");
     }
 
     
@@ -342,4 +309,39 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         // In this app we do nothing if sensor's accuracy changes
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        GreenhouseSelected = true;
+        switch (i) {
+            case 0:
+                myMQTT.publishTopic = "GreenhouseA";
+                break;
+            case 1:
+                myMQTT.publishTopic = "GreenhouseB";
+                break;
+            case 2:
+                myMQTT.publishTopic = "GreenhouseC";
+                break;
+            case 3:
+                myMQTT.publishTopic = "GreenhouseD";
+                break;
+            case 4:
+                myMQTT.publishTopic = "GreenhouseE";
+                break;
+            case 5:
+                myMQTT.publishTopic = "GreenhouseF";
+                break;
+            case 6:
+                myMQTT.publishTopic = "GreenhouseG";
+                break;
+            case 7:
+                myMQTT.publishTopic = "GreenhouseH";
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+            GreenhouseSelected = false;
+    }
 }
