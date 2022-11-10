@@ -6,6 +6,9 @@ package dte.masteriot.mdp.mdprojectsensors;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private MyOnItemActivatedListener onItemActivatedListener;
     private Object next;
 
-    ExecutorService es; //[MGM] Background
+    ExecutorService es;//[MGM] Background
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,15 @@ public class MainActivity extends AppCompatActivity {
             // Restore state related to selections previously made
             tracker.onRestoreInstanceState(savedInstanceState);
         }
+        handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message inputMessage) {
+//Changes
+            }
+        };
+        es = Executors.newSingleThreadExecutor();
+        MQTTSub task = new MQTTSub(handler, this);
+        es.execute(task);
     }
 
     @Override

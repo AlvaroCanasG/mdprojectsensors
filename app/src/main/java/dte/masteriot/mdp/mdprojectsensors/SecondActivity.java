@@ -272,7 +272,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         lightMeasurement = String.format("%.01f",sensorEvent.values[0]);
-        tvSensorValue.setText(lightMeasurement+"%");
+        tvSensorValue.setText(lightMeasurement);
     }
 
     
