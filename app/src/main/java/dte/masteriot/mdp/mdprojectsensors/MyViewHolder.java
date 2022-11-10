@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +17,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Iterator;
+
 public class MyViewHolder extends RecyclerView.ViewHolder {
 
     // Holds references to individual item views
@@ -20,6 +26,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView subtitle;
     ImageView image;
     CardView status;
+    ImageView ivCheckBox;
 
     Context context;
     MyAdapter adapter;
@@ -34,7 +41,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         image = itemView.findViewById(R.id.imageView); //[Mario] You have to add here to select the image when the initialize the list
         // imageView is the name of the XML Layout
         status = itemView.findViewById(R.id.background);
-
+        ivCheckBox = itemView.findViewById(R.id.iv_check_box);
         adapter = ad;
     }
 
@@ -52,9 +59,54 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
         }
         if(isSelected) {
+
+            ivCheckBox.setVisibility(View.VISIBLE);
+
+            itemView.setBackgroundColor(Color.LTGRAY);
             title.setTextColor(Color.WHITE);
-            status.setBackgroundColor(Color.parseColor("#bcbcbc"));
+            //status.setBackgroundColor(Color.parseColor("#bcbcbc"));
+            //When action mode is not enable
+            ActionMode.Callback callback = new ActionMode.Callback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                    //Initialize menu inflater
+                    MenuInflater menuInflater = actionMode.getMenuInflater();
+                    // Inflate menu
+                    menuInflater.inflate(R.menu.menu,menu);
+                    //Return true
+                    return true;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                    //When action mode is prepare
+                    // Set isEnable true
+
+
+                    return false;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                    int id = menuItem.getItemId();
+
+                    switch (id){
+                        case R.id.menu_delete:
+
+
+                    }
+                    //mainViewModel.setText(String.valueOf());
+                    //notifyDataSetChanged();
+                    return true;
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode actionMode) {
+
+                }
+            };
         } else {
+            ivCheckBox.setVisibility(View.GONE);
             title.setTextColor(Color.BLACK);
 
         }

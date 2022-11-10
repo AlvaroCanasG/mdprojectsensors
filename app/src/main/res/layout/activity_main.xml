@@ -8,74 +8,55 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="372dp"
-        android:layout_height="495dp"
+        android:layout_width="392dp"
+        android:layout_height="591dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/layout_buttons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView">
 
-        <Button
-            android:id="@+id/list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:onClick="listLayout"
-            android:text="List" />
-
-        <Button
-            android:id="@+id/grid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:onClick="gridLayout"
-            android:text="Grid" />
-
-    </LinearLayout>
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="328dp"
         android:layout_height="51dp"
-        android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_buttons">
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView">
 
         <Button
             android:id="@+id/seeselectionbutton2"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="225dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
             android:onClick="seeCurrentSelection"
-            android:text="See current selection" />
+            android:text="New Measurement"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button" />
 
         <Button
+
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:onClick="Eliminate"
-            android:text="Delete" />
+            android:text="Delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

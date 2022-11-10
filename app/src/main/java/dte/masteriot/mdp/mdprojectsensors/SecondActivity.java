@@ -183,6 +183,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         tvHumidityValue = findViewById(R.id.humMeasurement);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        //MGM
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
