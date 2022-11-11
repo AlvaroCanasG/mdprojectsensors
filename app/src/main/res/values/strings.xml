@@ -7,31 +7,15 @@
     <string name="steps_counter_off">Steps Count\nOFF</string>
     <string name="steps_counter_on">Steps Count\nON</string>
 
-    <string name="A_light">GreenHouseA/Light</string>
-    <string name="A_Temperature">GreenHouseA/Temperature</string>
-    <string name="A_Humidity">GreenHouseA/Humidity</string>
-
-
-    <string name="B_light">GreenHouseB/Light</string>
-    <string name="B_Temperature">GreenHouseB/Temperature</string>
-    <string name="B_Humidity">GreenHouseB/Humidity</string>
-
-    <string name="C_light">GreenHouseC/Light</string>
-    <string name="C_Temperature">GreenHouseC/Temperature</string>
-    <string name="C_Humidity">GreenHouseC/Humidity</string>
-
-    <string name="D_light">GreenHouseD/Light</string>
-    <string name="D_Temperature">GreenHouseD/Temperature</string>
-    <string name="D_Humidity">GreenHouseD/Humidity</string>
     <string-array name="Greenhouses_array">
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>H</item>
+        <item>Tomato</item>
+        <item>Pepper</item>
+        <item>Eggplant</item>
+        <item>Green bean</item>
+        <item>Zucchini</item>
+        <item>Cucumber</item>
+        <item>Melon</item>
+        <item>Watermelon</item>
     </string-array>
 
 </resources>

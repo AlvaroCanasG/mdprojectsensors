@@ -64,7 +64,6 @@ public class MQTTClient extends AppCompatActivity {
 
     public void publishMessage(String measurement) throws MqttException {
         calendar = Calendar.getInstance();
-        String date = dateFormat.format(calendar.getTime());
 
         MqttMessage message = new MqttMessage();
         message.setPayload(measurement.getBytes());
@@ -86,7 +85,5 @@ public class MQTTClient extends AppCompatActivity {
             }
         });
 
-        // THIS DOES NOT WORK!
-        mqttAndroidClient.subscribe(subscriptionTopic, 0);
     }
 }

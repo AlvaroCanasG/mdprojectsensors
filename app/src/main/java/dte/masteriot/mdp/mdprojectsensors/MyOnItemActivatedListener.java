@@ -40,9 +40,13 @@ public class MyOnItemActivatedListener implements OnItemActivatedListener {
         Log.d(TAG, "Clicked item with position = " + itemdetails.getPosition()
                 + " and key = " + itemdetails.getSelectionKey());
         */
-        Intent i = new Intent(context, SecondActivity.class);
-        i.putExtra("text", "Clicked item with position = " + itemdetails.getPosition()
-                + " and key = " + itemdetails.getSelectionKey());
+        Intent i = new Intent(context, ThirdActivity.class);
+        Item selecteditem = adapter.getItemAtPosition(itemdetails.getPosition());
+             i.putExtra("Light", selecteditem.getLight());
+             i.putExtra("Humidity", selecteditem.getHumidity());
+             i.putExtra("Temperature", selecteditem.getTemperature());
+             i.putExtra("Date", selecteditem.getDate());
+
         context.startActivity(i);
         return true;
 

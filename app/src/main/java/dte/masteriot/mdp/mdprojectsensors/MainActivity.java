@@ -40,6 +40,14 @@ public class MainActivity extends AppCompatActivity {
     private SelectionTracker tracker;
     private MyOnItemActivatedListener onItemActivatedListener;
     private Object next;
+    String TomatoLight, TomatoTemperature, TomatoHumidity, TomatoDate = "---";
+    String EggplantLight, EggplantTemperature, EggplantHumidity, EggplantDate = "---";
+    String PepperLight, PepperTemperature, PepperHumidity, PepperDate = "---";
+    String GreenBeanLight, GreenBeanTemperature, GreenBeanHumidity, GreenBeanDate = "---";
+    String ZucchiniLight, ZucchiniTemperature, ZucchiniHumidity, ZucchiniDate = "---";
+    String CucumberLight, CucumberTemperature, CucumberHumidity, CucumberDate = "---";
+    String MelonLight, MelonTemperature, MelonHumidity, MelonDate = "---";
+    String WatermelonLight, WatermelonTemperature, WatermelonHumidity, WatermelonDate = "---";
 
     ExecutorService es;//[MGM] Background
     Handler handler;
@@ -80,10 +88,57 @@ public class MainActivity extends AppCompatActivity {
             // Restore state related to selections previously made
             tracker.onRestoreInstanceState(savedInstanceState);
         }
-        handler = new Handler(Looper.getMainLooper()) {
-            @Override
+        handler = new Handler(Looper.getMainLooper()) { //Handler for the message received from the background. Depending on the key (topic), the message will be assigned to a specif String variable
+            @Override                                   //Then, the attributes (Temperature, Humidity and Light) of each item are updated.
             public void handleMessage(Message inputMessage) {
-//Changes
+                TomatoLight = inputMessage.getData().getString("Tomato/Light");
+                TomatoTemperature = inputMessage.getData().getString("Tomato/Temperature");
+                TomatoHumidity = inputMessage.getData().getString("Tomato/Humidity");
+                TomatoDate = inputMessage.getData().getString("Tomato/Date");
+                recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
+
+                EggplantLight = inputMessage.getData().getString("Eggplant/Light");
+                EggplantTemperature = inputMessage.getData().getString("Eggplant/Temperature");
+                EggplantHumidity = inputMessage.getData().getString("Eggplant/Humidity");
+                EggplantDate = inputMessage.getData().getString("Eggplant/Date");
+                recyclerViewAdapter.getItemWithKey(2).setParameters(EggplantLight,EggplantHumidity, EggplantTemperature, EggplantDate);
+
+                PepperLight = inputMessage.getData().getString("Pepper/Light");
+                PepperTemperature = inputMessage.getData().getString("Pepper/Temperature");
+                PepperHumidity = inputMessage.getData().getString("Pepper/Humidity");
+                PepperDate = inputMessage.getData().getString("Pepper/Date");
+                recyclerViewAdapter.getItemWithKey(1).setParameters(PepperLight,PepperHumidity, PepperTemperature, PepperDate);
+
+                ZucchiniLight = inputMessage.getData().getString("Zucchini/Light");
+                ZucchiniTemperature = inputMessage.getData().getString("Zucchini/Temperature");
+                ZucchiniHumidity = inputMessage.getData().getString("Zucchini/Humidity");
+                ZucchiniDate = inputMessage.getData().getString("Zucchini/Date");
+                recyclerViewAdapter.getItemWithKey(4).setParameters(ZucchiniLight,ZucchiniHumidity, ZucchiniTemperature, ZucchiniDate);
+
+                GreenBeanLight = inputMessage.getData().getString("GreenBean/Light");
+                GreenBeanTemperature = inputMessage.getData().getString("GreenBean/Temperature");
+                GreenBeanHumidity = inputMessage.getData().getString("GreenBean/Humidity");
+                GreenBeanDate = inputMessage.getData().getString("GreenBean/Date");
+                recyclerViewAdapter.getItemWithKey(3).setParameters(GreenBeanLight,GreenBeanHumidity, GreenBeanTemperature, GreenBeanDate);
+
+                CucumberLight = inputMessage.getData().getString("Cucumber/Light");
+                CucumberTemperature = inputMessage.getData().getString("Cucumber/Temperature");
+                CucumberHumidity = inputMessage.getData().getString("Cucumber/Humidity");
+                CucumberDate = inputMessage.getData().getString("Cucumber/Date");
+                recyclerViewAdapter.getItemWithKey(5).setParameters(CucumberLight,CucumberHumidity, CucumberTemperature, CucumberDate);
+
+                MelonLight = inputMessage.getData().getString("Melon/Light");
+                MelonTemperature = inputMessage.getData().getString("Melon/Temperature");
+                MelonHumidity = inputMessage.getData().getString("Melon/Humidity");
+                MelonDate = inputMessage.getData().getString("Melon/Date");
+                recyclerViewAdapter.getItemWithKey(6).setParameters(MelonLight,MelonHumidity, MelonTemperature, MelonDate);
+
+                WatermelonLight = inputMessage.getData().getString("Watermelon/Light");
+                WatermelonTemperature = inputMessage.getData().getString("Watermelon/Temperature");
+                WatermelonHumidity = inputMessage.getData().getString("Watermelon/Humidity");
+                WatermelonDate = inputMessage.getData().getString("Watermelon/Date");
+                recyclerViewAdapter.getItemWithKey(7).setParameters(WatermelonLight,WatermelonHumidity, WatermelonTemperature, WatermelonDate);
+
             }
         };
         es = Executors.newSingleThreadExecutor();
@@ -101,28 +156,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initListOfItems () {
 
-        listofitems.add(new Item("Tomato", "https://www.tierraburritos.com/", "March - April - May" , (long) 0 , R.drawable.tomato, true ));
-        listofitems.add(new Item("Peper", "https://ochentagrados.com/", "March - April - May" , (long) 1 , R.drawable.peper , false ));
-        listofitems.add(new Item("Eggplant", "https://grupolamusa.com/restaurante-musa-malasana/", "July - August" , (long) 2 , R.drawable.eggplant , true ));
-        listofitems.add(new Item("Green bean", "https://lamejorhamburguesa.com/", "May - Jun" , (long) 3 , R.drawable.green_bean , false ));
-        listofitems.add(new Item("Zucchini", "https://www.sublimeworldrestaurant.com//", "May" , (long) 4 , R.drawable.zucchini, true ));
-        listofitems.add(new Item("Cucumber", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "April" , (long) 5 , R.drawable.cucumber , true ));
-        listofitems.add(new Item("Melon", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "March - April - May" , (long) 5 , R.drawable.melon , true ));
-        listofitems.add(new Item("Watermelon", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "February - March - April" , (long) 5 , R.drawable.watermelon , true ));
+        listofitems.add(new Item("Tomato", TomatoLight,TomatoHumidity,TomatoTemperature,TomatoDate, "March - April - May" , (long) 0 , R.drawable.tomato, true ));
+        listofitems.add(new Item("Pepper", PepperLight, PepperHumidity, PepperTemperature,PepperDate, "March - April - May" , (long) 1 , R.drawable.peper , false ));
+        listofitems.add(new Item("Eggplant", EggplantLight, EggplantHumidity, EggplantTemperature,EggplantDate, "July - August" , (long) 2 , R.drawable.eggplant , true ));
+        listofitems.add(new Item("Green bean", GreenBeanLight,GreenBeanHumidity, GreenBeanTemperature,GreenBeanDate, "May - Jun" , (long) 3 , R.drawable.green_bean , false ));
+        listofitems.add(new Item("Zucchini", ZucchiniLight, ZucchiniHumidity, ZucchiniTemperature,ZucchiniDate, "May" , (long) 4 , R.drawable.zucchini, true ));
+        listofitems.add(new Item("Cucumber", CucumberLight, CucumberHumidity,CucumberTemperature,CucumberDate,"April" , (long) 5 , R.drawable.cucumber , true ));
+        listofitems.add(new Item("Melon", MelonLight,MelonHumidity, MelonTemperature,MelonDate, "March - April - May" , (long) 6 , R.drawable.melon , true ));
+        listofitems.add(new Item("Watermelon", WatermelonLight,WatermelonHumidity, WatermelonTemperature,WatermelonDate, "February - March - April" , (long) 7 , R.drawable.watermelon , true ));
 
         listofitemsinitialized = true;
 
 
-
-
-        // Populate the list of items if not done before:
-        /*final int ITEM_COUNT = 50;
-        if (listofitemsinitialized == false) {
-            for (int i = 0; i < ITEM_COUNT; ++i) {
-                listofitems.add(new Item("Item " + i, "This is the item number " + i, (long) i));
-            }
-            listofitemsinitialized = true;
-        }*/
 
     }
 
@@ -182,8 +227,7 @@ public class MainActivity extends AppCompatActivity {
         es.execute(new LengthyTask());
     }
 
-    Test1 Git
-    Test2
+
      */
 
 }
