@@ -66,45 +66,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
             title.setTextColor(Color.WHITE);
             //status.setBackgroundColor(Color.parseColor("#bcbcbc"));
             //When action mode is not enable
-            ActionMode.Callback callback = new ActionMode.Callback() {
-                @Override
-                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                    //Initialize menu inflater
-                    MenuInflater menuInflater = actionMode.getMenuInflater();
-                    // Inflate menu
-                    menuInflater.inflate(R.menu.menu,menu);
-                    //Return true
-                    return true;
-                }
 
-                @Override
-                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                    //When action mode is prepare
-                    // Set isEnable true
-
-
-                    return false;
-                }
-
-                @Override
-                public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                    int id = menuItem.getItemId();
-
-                    switch (id){
-                        case R.id.menu_delete:
-
-
-                    }
-                    //mainViewModel.setText(String.valueOf());
-                    //notifyDataSetChanged();
-                    return true;
-                }
-
-                @Override
-                public void onDestroyActionMode(ActionMode actionMode) {
-
-                }
-            };
         } else {
             ivCheckBox.setVisibility(View.GONE);
             title.setTextColor(Color.BLACK);

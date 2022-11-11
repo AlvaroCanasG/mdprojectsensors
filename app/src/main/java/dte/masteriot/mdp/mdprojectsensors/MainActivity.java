@@ -4,11 +4,16 @@
 
 package dte.masteriot.mdp.mdprojectsensors;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.SelectionTracker;
@@ -78,6 +83,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_delete:
+                confirmation();
+                return true;
+            case R.id.menu_select_all:
+
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         tracker.onSaveInstanceState(outState); // Save state about selections.
@@ -93,8 +119,8 @@ public class MainActivity extends AppCompatActivity {
         listofitems.add(new Item("Green bean", "https://lamejorhamburguesa.com/", "May - Jun" , (long) 3 , R.drawable.green_bean , false ));
         listofitems.add(new Item("Zucchini", "https://www.sublimeworldrestaurant.com//", "May" , (long) 4 , R.drawable.zucchini, true ));
         listofitems.add(new Item("Cucumber", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "April" , (long) 5 , R.drawable.cucumber , true ));
-        listofitems.add(new Item("Melon", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "March - April - May" , (long) 5 , R.drawable.melon , true ));
-        listofitems.add(new Item("Watermelon", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "February - March - April" , (long) 5 , R.drawable.watermelon , true ));
+        listofitems.add(new Item("Melon", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "March - April - May" , (long) 6 , R.drawable.melon , true ));
+        listofitems.add(new Item("Watermelon", "https://www.loscervecistas.es/locales-cervecistas/el-2-de-fortuny/", "February - March - April" , (long) 7 , R.drawable.watermelon , true ));
 
         listofitemsinitialized = true;
 
@@ -113,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ------ Buttons' on-click listeners ------ //
-
+/*
     public void listLayout(View view) {
         // Button to see in a linear fashion has been clicked:
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -126,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, ThirdActivity.class);
         startActivity(i);
     }
+*/
 
     public void seeCurrentSelection(View view) {
         // Button "see current selection" has been clicked:
@@ -150,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void Eliminate(View view) {
+    public void Eliminate() {
         // Button "see current selection" has been clicked:
 
         Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
@@ -160,6 +187,28 @@ public class MainActivity extends AppCompatActivity {
             //recyclerViewAdapter.notifyItemRemoved(Integer.parseInt(iteratorSelectedItemsKeys.next().toString()));
         }
         recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    public void confirmation(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want delete ?")
+            .setCancelable(false)
+        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                Eliminate();
+            }
+        })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 
     /*
