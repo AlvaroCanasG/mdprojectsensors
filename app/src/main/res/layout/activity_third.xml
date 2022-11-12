@@ -1,6 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/cloud_api"
+        android:layout_width="89dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="256dp"
+        android:layout_marginTop="196dp"
+        android:text="- - -"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/grey_green"
+        android:fontFamily="sans-serif-black"
+        android:text="GREENHOUSE RECORD"
+        android:textAlignment="center"
+        android:textColor="@color/darkgreen"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="52dp"
+        android:background="@drawable/border2"
+        app:layout_constraintBottom_toTopOf="@+id/imageView10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView11"
+        app:layout_constraintVertical_bias="0.464"
+        app:srcCompat="@drawable/thermometer" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="336dp"
+        android:background="@drawable/border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/dome_light" />
+
+    <TextView
+        android:id="@+id/temp_text"
+        android:layout_width="104dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="184dp"
+        android:text="- - -"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cloud_text" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="151dp"
+        android:layout_height="186dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="228dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/greenhouse" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="68dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="224dp"
+        android:background="@drawable/border3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/humidity" />
+
+    <TextView
+        android:id="@+id/hum_text"
+        android:layout_width="104dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="184dp"
+        android:text="- - -"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temp_text"
+        app:layout_constraintVertical_bias="0.047" />
+
+    <TextView
+        android:id="@+id/cloud_text"
+        android:layout_width="106dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="348dp"
+        android:layout_marginEnd="184dp"
+        android:text="- - -"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/energy_calc"
+        android:layout_width="173dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.693"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.77"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="80dp"
+        android:layout_height="46dp"
+        android:lineSpacingExtra="14sp"
+        android:text="Energy"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/energy_calc"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.782" />
+
+    <EditText
+        android:id="@+id/light_calc"
+        android:layout_width="171dp"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.87"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="80dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="48dp"
+        android:lineSpacingExtra="14sp"
+        android:text="Light"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.89" />
+
+    <ImageView
+        android:id="@+id/imageView15"
+        android:layout_width="299dp"
+        android:layout_height="238dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView12"
+        app:srcCompat="@drawable/cloud" />
+
+    <ImageView
+        android:id="@+id/imageView16"
+        android:layout_width="130dp"
+        android:layout_height="176dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sun" />
+
+    <ImageView
+        android:id="@+id/imageView20"
+        android:layout_width="47dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="252dp"
+        android:layout_marginEnd="156dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView12"
+        app:srcCompat="@drawable/gota" />
+
+    <TextView
+        android:id="@+id/temp_api"
+        android:layout_width="89dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="216dp"
+        android:text="- - -"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+    <TextView
+        android:id="@+id/hum_api"
+        android:layout_width="89dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="248dp"
+        android:layout_marginTop="268dp"
+        android:text="- - -"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView12" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
