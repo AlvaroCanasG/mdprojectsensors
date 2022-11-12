@@ -96,48 +96,92 @@ public class MainActivity extends AppCompatActivity {
                 TomatoHumidity = inputMessage.getData().getString("Tomato/Humidity");
                 TomatoDate = inputMessage.getData().getString("Tomato/Date");
                 recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
-
-                EggplantLight = inputMessage.getData().getString("Eggplant/Light");
-                EggplantTemperature = inputMessage.getData().getString("Eggplant/Temperature");
-                EggplantHumidity = inputMessage.getData().getString("Eggplant/Humidity");
-                EggplantDate = inputMessage.getData().getString("Eggplant/Date");
-                recyclerViewAdapter.getItemWithKey(2).setParameters(EggplantLight,EggplantHumidity, EggplantTemperature, EggplantDate);
+                if(Float.parseFloat(TomatoTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(0).setStatus(false);
+                }else if(Float.parseFloat((TomatoTemperature)) < R.dimen.MINTEMP){
+                    recyclerViewAdapter.getItemWithKey(0).setStatus(false);
+                }
 
                 PepperLight = inputMessage.getData().getString("Pepper/Light");
                 PepperTemperature = inputMessage.getData().getString("Pepper/Temperature");
                 PepperHumidity = inputMessage.getData().getString("Pepper/Humidity");
                 PepperDate = inputMessage.getData().getString("Pepper/Date");
                 recyclerViewAdapter.getItemWithKey(1).setParameters(PepperLight,PepperHumidity, PepperTemperature, PepperDate);
+                if(Float.parseFloat(PepperTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(1).setStatus(false);
+                }else if(Float.parseFloat((PepperTemperature)) < R.dimen.MINTEMP) {
+                    recyclerViewAdapter.getItemWithKey(1).setStatus(false);
+                }
 
-                ZucchiniLight = inputMessage.getData().getString("Zucchini/Light");
-                ZucchiniTemperature = inputMessage.getData().getString("Zucchini/Temperature");
-                ZucchiniHumidity = inputMessage.getData().getString("Zucchini/Humidity");
-                ZucchiniDate = inputMessage.getData().getString("Zucchini/Date");
-                recyclerViewAdapter.getItemWithKey(4).setParameters(ZucchiniLight,ZucchiniHumidity, ZucchiniTemperature, ZucchiniDate);
+                EggplantLight = inputMessage.getData().getString("Eggplant/Light");
+                EggplantTemperature = inputMessage.getData().getString("Eggplant/Temperature");
+                EggplantHumidity = inputMessage.getData().getString("Eggplant/Humidity");
+                EggplantDate = inputMessage.getData().getString("Eggplant/Date");
+                recyclerViewAdapter.getItemWithKey(2).setParameters(EggplantLight,EggplantHumidity, EggplantTemperature, EggplantDate);
+                if(Float.parseFloat(EggplantTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(2).setStatus(false);
+                }else if(Float.parseFloat((EggplantTemperature)) < R.dimen.MINTEMP){
+                    recyclerViewAdapter.getItemWithKey(2).setStatus(false);
+                }
+
 
                 GreenBeanLight = inputMessage.getData().getString("GreenBean/Light");
                 GreenBeanTemperature = inputMessage.getData().getString("GreenBean/Temperature");
                 GreenBeanHumidity = inputMessage.getData().getString("GreenBean/Humidity");
                 GreenBeanDate = inputMessage.getData().getString("GreenBean/Date");
                 recyclerViewAdapter.getItemWithKey(3).setParameters(GreenBeanLight,GreenBeanHumidity, GreenBeanTemperature, GreenBeanDate);
+                if(Float.parseFloat(GreenBeanTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(3).setStatus(false);
+                }else if(Float.parseFloat((GreenBeanTemperature)) < R.dimen.MINTEMP) {
+                    recyclerViewAdapter.getItemWithKey(3).setStatus(false);
+                }
+
+                ZucchiniLight = inputMessage.getData().getString("Zucchini/Light");
+                ZucchiniTemperature = inputMessage.getData().getString("Zucchini/Temperature");
+                ZucchiniHumidity = inputMessage.getData().getString("Zucchini/Humidity");
+                ZucchiniDate = inputMessage.getData().getString("Zucchini/Date");
+                recyclerViewAdapter.getItemWithKey(4).setParameters(ZucchiniLight,ZucchiniHumidity, ZucchiniTemperature, ZucchiniDate);
+                if(Float.parseFloat(ZucchiniTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(4).setStatus(false);
+                }else if(Float.parseFloat((ZucchiniTemperature)) < R.dimen.MINTEMP) {
+                    recyclerViewAdapter.getItemWithKey(4).setStatus(false);
+                }
+
 
                 CucumberLight = inputMessage.getData().getString("Cucumber/Light");
                 CucumberTemperature = inputMessage.getData().getString("Cucumber/Temperature");
                 CucumberHumidity = inputMessage.getData().getString("Cucumber/Humidity");
                 CucumberDate = inputMessage.getData().getString("Cucumber/Date");
                 recyclerViewAdapter.getItemWithKey(5).setParameters(CucumberLight,CucumberHumidity, CucumberTemperature, CucumberDate);
+                if(Float.parseFloat(CucumberTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(5).setStatus(false);
+                }else if(Float.parseFloat((CucumberTemperature)) < R.dimen.MINTEMP) {
+                    recyclerViewAdapter.getItemWithKey(5).setStatus(false);
+                }
+
 
                 MelonLight = inputMessage.getData().getString("Melon/Light");
                 MelonTemperature = inputMessage.getData().getString("Melon/Temperature");
                 MelonHumidity = inputMessage.getData().getString("Melon/Humidity");
                 MelonDate = inputMessage.getData().getString("Melon/Date");
                 recyclerViewAdapter.getItemWithKey(6).setParameters(MelonLight,MelonHumidity, MelonTemperature, MelonDate);
+                if(Float.parseFloat(MelonTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(6).setStatus(false);
+                }else if(Float.parseFloat((MelonTemperature)) < R.dimen.MINTEMP) {
+                    recyclerViewAdapter.getItemWithKey(6).setStatus(false);
+                }
+
 
                 WatermelonLight = inputMessage.getData().getString("Watermelon/Light");
                 WatermelonTemperature = inputMessage.getData().getString("Watermelon/Temperature");
                 WatermelonHumidity = inputMessage.getData().getString("Watermelon/Humidity");
                 WatermelonDate = inputMessage.getData().getString("Watermelon/Date");
                 recyclerViewAdapter.getItemWithKey(7).setParameters(WatermelonLight,WatermelonHumidity, WatermelonTemperature, WatermelonDate);
+                if(Float.parseFloat(WatermelonTemperature) > R.dimen.MAXTEMP){
+                    recyclerViewAdapter.getItemWithKey(7).setStatus(false);
+                }else if(Float.parseFloat((WatermelonTemperature)) < R.dimen.MINTEMP) {
+                    recyclerViewAdapter.getItemWithKey(7).setStatus(false);
+                }
 
             }
         };

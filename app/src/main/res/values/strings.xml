@@ -18,4 +18,7 @@
         <item>Watermelon</item>
     </string-array>
 
+    <item name="MAXTEMP" format="float" type="dimen">30.0</item>
+    <item name="MINTEMP" format="float" type="dimen">10.0</item>
+
 </resources>

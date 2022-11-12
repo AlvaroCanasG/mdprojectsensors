@@ -56,6 +56,10 @@ public class Item {
 
     public boolean getStatus(){return status; }
 
+    public void setStatus(boolean Status){
+            status = Status;
+    }
+
     // We override the "equals" operator to only compare keys
     // (useful when searching for the position of a specific key in a list of Items):
     public boolean equals(Object other) {
