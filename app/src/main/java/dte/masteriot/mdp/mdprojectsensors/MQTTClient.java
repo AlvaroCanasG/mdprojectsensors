@@ -74,16 +74,20 @@ public class MQTTClient extends AppCompatActivity {
         }
     }
 
-    public void subscribeToTopic() throws MqttException {
-        mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
-            @Override
-            public void onSuccess(IMqttToken asyncActionToken) {
-            }
+    public void subscribeToTopic()  {
+        try {
+            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                }
 
-            @Override
-            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-            }
-        });
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
 
     }
 }

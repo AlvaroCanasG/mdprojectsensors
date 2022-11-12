@@ -1,23 +1,21 @@
 package dte.masteriot.mdp.mdprojectsensors;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
 
-public class MQTTSub implements Runnable{//This class executes a thread which creates one MQTT Client for each Greenhouse. Then each client subscribes to the corresponding topic
-    Handler creator;                    //Also, a callback is set for each client, in order to handle the incoming messages
-    Activity thisactivity;
-    public MQTTSub(Handler handler, Activity activity) {
-        creator = handler;
-        thisactivity = activity;
+public class MQTTSub implements Runnable{//This class executes a thread to handle the messages received from a specif MQTT client which is subscribed to different topics
+    Handler creator;
+    MQTTClient Greenhouse;
+    public MQTTSub(Handler handler, MQTTClient MQTTclient) {
+        this.creator = handler;
+        this.Greenhouse = MQTTclient;
     }
 
 
@@ -34,68 +32,12 @@ public class MQTTSub implements Runnable{//This class executes a thread which cr
         msg_data = msg.getData();
 
 
-        //Creation and subscription of the MQTT client
-
-        MQTTClient Greenhouse = new MQTTClient(thisactivity);
-        Greenhouse.subscriptionTopic = "Tomato/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        Greenhouse.subscriptionTopic = "Eggplant/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        Greenhouse.subscriptionTopic = "Pepper/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        Greenhouse.subscriptionTopic = "GreenBean/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        Greenhouse.subscriptionTopic = "Cucumber/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
 
 
-        Greenhouse.subscriptionTopic = "Zucchini/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        Greenhouse.subscriptionTopic = "Melon/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-        Greenhouse.subscriptionTopic = "Watermelon/#";
-        try {
-            Greenhouse.subscribeToTopic();
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
 
 
-        //Callback set for each client
+
+        //Callback set for the client
         Greenhouse.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {

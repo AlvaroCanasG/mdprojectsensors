@@ -25,6 +25,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     ExecutorService es;//[MGM] Background
     Handler handler;
+    MQTTClient Greenhouse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +101,55 @@ public class MainActivity extends AppCompatActivity {
             // Restore state related to selections previously made
             tracker.onRestoreInstanceState(savedInstanceState);
         }
-        /*
+
+        // Creation of the MQTT Client and subscription to the topics
+        Greenhouse = new MQTTClient(this);
+        Greenhouse.mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), Greenhouse.serverUri, Greenhouse.clientId);
+        MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
+        mqttConnectOptions.setAutomaticReconnect(true);
+        mqttConnectOptions.setCleanSession(false);
+
+        //Last Will message
+        mqttConnectOptions.setWill(Greenhouse.publishTopic,Greenhouse.LWillmessage.getBytes(),1,false);
+
+        try {
+            Greenhouse.mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
+                    disconnectedBufferOptions.setBufferEnabled(true);
+                    disconnectedBufferOptions.setBufferSize(100);
+                    disconnectedBufferOptions.setPersistBuffer(false);
+                    disconnectedBufferOptions.setDeleteOldestMessages(false);
+                    Greenhouse.mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
+                    Greenhouse.subscriptionTopic = "Tomato/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "Pepper/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "Eggplant/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "GreenBean/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "Cucumber/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "Zucchini/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "Melon/#";
+                    Greenhouse.subscribeToTopic();
+                    Greenhouse.subscriptionTopic = "Watermelon/#";
+                    Greenhouse.subscribeToTopic();
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+
+
         handler = new Handler(Looper.getMainLooper()) { //Handler for the message received from the background. Depending on the key (topic), the message will be assigned to a specif String variable
             @Override                                   //Then, the attributes (Temperature, Humidity and Light) of each item are updated.
             public void handleMessage(Message inputMessage) {
@@ -192,10 +248,10 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         es = Executors.newSingleThreadExecutor();
-        MQTTSub task = new MQTTSub(handler, this);
+        MQTTSub task = new MQTTSub(handler, Greenhouse);
         es.execute(task);
 
-         */
+
     }
 
 
