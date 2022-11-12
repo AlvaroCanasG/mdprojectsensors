@@ -4,14 +4,19 @@
 
 package dte.masteriot.mdp.mdprojectsensors;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.SelectionTracker;
@@ -88,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             // Restore state related to selections previously made
             tracker.onRestoreInstanceState(savedInstanceState);
         }
+        /*
         handler = new Handler(Looper.getMainLooper()) { //Handler for the message received from the background. Depending on the key (topic), the message will be assigned to a specif String variable
             @Override                                   //Then, the attributes (Temperature, Humidity and Light) of each item are updated.
             public void handleMessage(Message inputMessage) {
@@ -188,8 +194,31 @@ public class MainActivity extends AppCompatActivity {
         es = Executors.newSingleThreadExecutor();
         MQTTSub task = new MQTTSub(handler, this);
         es.execute(task);
+
+         */
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_delete:
+                confirmation();
+                return true;
+            case R.id.menu_select_all:
+
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -253,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void Eliminate(View view) {
+    public void Eliminate() {
         // Button "see current selection" has been clicked:
 
         Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
@@ -264,7 +293,27 @@ public class MainActivity extends AppCompatActivity {
         }
         recyclerViewAdapter.notifyDataSetChanged();
     }
+    public void confirmation(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want delete ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
+                        Eliminate();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
     /*
     public void buttonAsyncListener(View view) {
         //Log.d(logTag, "Scheduling new task in background thread");

@@ -28,7 +28,9 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 public class SecondActivity extends AppCompatActivity implements SensorEventListener, AdapterView.OnItemSelectedListener {
@@ -46,6 +48,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     TextView tvSensorValue;
     TextView tvTempValue;
     TextView tvHumidityValue;
+
 
 
     private SensorManager sensorManager;
@@ -195,7 +198,11 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         //MGM
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+        List<Item> listofitems = ((MyApplication) this.getApplication()).getListofitems();
+        //List<Item> listofitems = new ArrayList<>()
+        ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_item , listofitems);
+
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
