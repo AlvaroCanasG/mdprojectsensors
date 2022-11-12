@@ -22,8 +22,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
-        android:layout_width="328dp"
-        android:layout_height="51dp"
+        android:layout_width="329dp"
+        android:layout_height="64dp"
         android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,28 +34,17 @@
 
         <Button
             android:id="@+id/seeselectionbutton2"
-            android:layout_width="225dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/brown"
+            android:layout_width="269dp"
+            android:layout_height="57dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/white"
             android:onClick="seeCurrentSelection"
             android:text="New Measurement"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button" />
 
-        <Button
-
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:onClick="Eliminate"
-            android:text="Delete"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

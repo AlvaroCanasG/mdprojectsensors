@@ -24,26 +24,13 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
     Context context;
     Activity activity;
 
-    MainViewModel mainViewModel;
-
-    boolean isEnable = false;
-    boolean isSelectedAll = false;
-    ArrayList<String> selectList = new ArrayList<>();
-
     public MyAdapter(Context ctxt, List<Item> listofitems) {
         super();
         context = ctxt;
         items = listofitems;
-        this.activity = activity;
+
     }
-    /*
-    public MyAdapter(Context ctxt, List<Item> listofitems, Activity activity) {
-        super();
-        context = ctxt;
-        items = listofitems;
-        this.activity = activity;
-    }
-    */
+
 
     // ------ Implementation of methods of RecyclerView.Adapter ------ //
 
@@ -72,77 +59,9 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
 
         holder.bindValues(item, selectionTracker.isSelected(holder.getItemDetails().getSelectionKey()), status );
 
-        //holder.bindValues(item, holder.getItemDetails().getStatusItem()); //[MGM]
-        /*
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
 
-            public boolean onLongClick(View view){
-                if(!isEnable){
-                   //When action mode is not enable
-                    ActionMode.Callback callback = new ActionMode.Callback() {
-                        @Override
-                        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                            //Initialize menu inflater
-                            MenuInflater menuInflater = actionMode.getMenuInflater();
-                            // Inflate menu
-                            menuInflater.inflate(R.menu.menu,menu);
-                            //Return true
-                            return true;
-                        }
-
-                        @Override
-                        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                            //When action mode is prepare
-                            // Set isEnable true
-                            isEnable = true;
-                            ClickItem(holder);
-                            setSelectionTracker();
-
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                            return false;
-                        }
-
-                        @Override
-                        public void onDestroyActionMode(ActionMode actionMode) {
-
-                        }
-                    }
-                }
-            }
-            )
-
-
-        };
-
-         */
     }
-/*
-    private void ClickItem(MyViewHolder holder) {
-        String s = arrayList.get(holder.getAdapterPosition());
 
-        if(holder.ivCheckBox.getVisibility() == View.GONE){
-            //When item not selected
-            holder.ivCheckBox.setVisibility(View.VISIBLE);
-
-            holder.itemView.setBackgroundColor(Color.LTGRAY);
-
-            selectList.add(s);
-
-        }
-        else{
-            holder.ivCheckBox.setVisibility(View.GONE);
-
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-
-            selectList.remove(s);
-        }
-        mainViewModel.setText(String.valueOf(selectList.size()));
-    }
-*/
     @Override
     public int getItemCount() {
         return items.size();

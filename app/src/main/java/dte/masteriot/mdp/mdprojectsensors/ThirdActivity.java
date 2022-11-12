@@ -30,18 +30,11 @@ import java.util.concurrent.Executors;
 public class ThirdActivity extends AppCompatActivity {
     public static final String LOGSLOADWEBCONTENT = "LOGSLOADWEBCONTENT"; // to easily filter logs
     private String logTag; // to clearly identify logs
-    //private static final String URL_PARKS = "https://short.upm.es/3qnno";
-    private static final String URL_PARKS = "https://api.open-meteo.com/v1/forecast?latitude=51.5002&longitude=-0.1262&hourly=temperature_2m,relativehumidity_2m,cloudcover&timezone=Europe%2FLondon&start_date=2022-11-01&end_date=2022-11-01";
-
-
+    private static final String URL_API = "https://api.open-meteo.com/v1/forecast?latitude=51.5002&longitude=-0.1262&hourly=temperature_2m,relativehumidity_2m,cloudcover&timezone=Europe%2FLondon&start_date=2022-11-01&end_date=2022-11-01";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
     private String time_now,temp_now,hum_now,cloud_now;
-    private Button btPNG;
-    private Button btJSON;
-    private Button btKML;
-    private TextView text;
-    private ImageView imgView;
+    private TextView textTemp_api,textHum_api,textCloud_api,textTemp_mqtt,textHum_mqtt,textCloud_mqtt;
     ExecutorService es;
 
     @Override
@@ -56,11 +49,17 @@ public class ThirdActivity extends AppCompatActivity {
         // Get references to UI elements:
 
         //btJSON = findViewById(R.id.loadJSON);
-
-        imgView = findViewById(R.id.imageView);
+        textTemp_api = findViewById(R.id.temp_api);
+        textHum_api = findViewById(R.id.hum_api);
+        textCloud_api = findViewById(R.id.cloud_api);
+        textTemp_mqtt = findViewById(R.id.temp_text);
+        textHum_mqtt = findViewById(R.id.hum_text);
+        textCloud_mqtt = findViewById(R.id.cloud_text);
 
         // Create an executor for the background tasks:
         es = Executors.newSingleThreadExecutor();
+        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, URL_API);
+        es.execute(loadURLContents);
     }
 
     // Define the handler that will receive the messages from the background thread:
@@ -70,7 +69,6 @@ public class ThirdActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             // message received from background thread: load complete (or failure)
             String string_result;
-            Bitmap bitmap;
 
             super.handleMessage(msg);
             Log.d(logTag, "message received from background thread");
@@ -107,26 +105,22 @@ public class ThirdActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                text.setText(string_result);
+                textTemp_api.setText(temp_now);
+                textHum_api.setText(hum_now);
+                textCloud_api.setText(cloud_now);
+                textTemp_mqtt.setText("27ºC");
+                textHum_mqtt.setText("50%");
+                textCloud_mqtt.setText("10%");
             }
-            toggle_buttons(true); // re-enable the buttons
         }
     };
 
 
     public void readJSON(View view) {
-        toggle_buttons(false); // disable the buttons until the load is complete
-        text.setText("Loading " + URL_PARKS + "..."); // Inform the user by means of the TextView
-
         // Execute the loading task in background:
-        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, URL_PARKS);
+        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, URL_API);
         es.execute(loadURLContents);
     }
 
-
-    private void toggle_buttons(boolean state) {
-        // enable or disable buttons (depending on state)
-        btJSON.setEnabled(state);
-    }
 
 }
