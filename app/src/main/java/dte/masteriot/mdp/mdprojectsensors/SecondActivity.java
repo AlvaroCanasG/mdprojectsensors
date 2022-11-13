@@ -35,7 +35,7 @@ import java.util.Random;
 
 public class SecondActivity extends AppCompatActivity implements SensorEventListener, AdapterView.OnItemSelectedListener {
     Calendar calendar;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyy hh:mm:ss");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     SimpleDateFormat dateFormat1 = new SimpleDateFormat("H");
     SimpleDateFormat dateFormat2 = new SimpleDateFormat("M");
     SimpleDateFormat dateFormat3 = new SimpleDateFormat("s");

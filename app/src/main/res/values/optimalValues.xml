@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="Tomato">25</integer>
+    <integer name="Pepper">25</integer>
+    <integer name="Eggplant">25</integer>
+    <integer name="Green_bean">20</integer>
+    <integer name="Zucchini">25</integer>
+    <integer name="Cucumber">27</integer>
+    <integer name="Melon">23</integer>
+    <integer name="Watermelon">23</integer>
+
+</resources>
