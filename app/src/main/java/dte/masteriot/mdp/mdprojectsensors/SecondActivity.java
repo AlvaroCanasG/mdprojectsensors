@@ -2,6 +2,7 @@ package dte.masteriot.mdp.mdprojectsensors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -30,7 +31,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Random;
 
 public class SecondActivity extends AppCompatActivity implements SensorEventListener, AdapterView.OnItemSelectedListener {
@@ -63,7 +63,9 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     String lightMeasurement = "0.0";
     String temperatureMeasurement = "0.0";
     String humidityMeasurement = "0.0";
+    String firstRoot;
     MQTTClient myMQTT;
+    ArrayList<String> MyList;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +85,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                 if(!(humiditySensorIsActive | temperatureSensorIsActive | lightSensorIsActive)){
                                     myMQTT.SendNotification("No sensor ON");
                                 } else {
-                                        myMQTT.publishTopic = myMQTT.publishTopic + "/Date";
+                                        myMQTT.publishTopic = firstRoot + "/Date";
                                         calendar = Calendar.getInstance();
                                         String date = dateFormat.format(calendar.getTime());
                                         try {
@@ -93,7 +95,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                         }
 
                                         if (lightSensorIsActive) {
-                                                myMQTT.publishTopic = myMQTT.publishTopic + "/Light";
+                                                myMQTT.publishTopic = firstRoot + "/Light";
                                                 try {
                                                     myMQTT.publishMessage(lightMeasurement);
                                                 } catch (MqttException e) {
@@ -101,7 +103,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                                 }
                                             }
                                         if (temperatureSensorIsActive) {
-                                                myMQTT.publishTopic = myMQTT.publishTopic + "/Temperature";
+                                                myMQTT.publishTopic = firstRoot + "/Temperature";
                                                 try {
                                                     myMQTT.publishMessage(temperatureMeasurement);
                                                 } catch (MqttException e) {
@@ -109,7 +111,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                                 }
                                         }
                                         if (humiditySensorIsActive) {
-                                            myMQTT.publishTopic = myMQTT.publishTopic + "/Humidity";
+                                            myMQTT.publishTopic = firstRoot + "/Humidity";
                                             try {
                                                 myMQTT.publishMessage(humidityMeasurement);
                                             } catch (MqttException e) {
@@ -155,7 +157,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         mqttConnectOptions.setCleanSession(false);
 
         //Last Will message
-        mqttConnectOptions.setWill(myMQTT.publishTopic,myMQTT.LWillmessage.getBytes(),1,false);
+        mqttConnectOptions.setWill(myMQTT.publishTopic,myMQTT.LWillmessage.getBytes(),0,false);
 
         //SendNotification("Connecting to " + serverUri);
         try {
@@ -197,12 +199,10 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         tvHumidityValue = findViewById(R.id.humMeasurement);
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        //MGM
-        List<Item> listofitems = ((MyApplication) this.getApplication()).getListofitems();
-        //List<Item> listofitems = new ArrayList<>()
-        ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_item , listofitems);
-
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+        Intent intent = getIntent();
+        //Get the updated list of Greenhouses
+        MyList = intent.getStringArrayListExtra("Names");
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item ,MyList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -334,28 +334,28 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         GreenhouseSelected = true;
         switch (i) {
             case 0:
-                myMQTT.publishTopic = "Tomato";
+                firstRoot = "Tomato";
                 break;
             case 1:
-                myMQTT.publishTopic = "Pepper";
+                firstRoot = "Pepper";
                 break;
             case 2:
-                myMQTT.publishTopic = "Eggplant";
+                firstRoot = "Eggplant";
                 break;
             case 3:
-                myMQTT.publishTopic = "GreenBean";
+                firstRoot = "GreenBean";
                 break;
             case 4:
-                myMQTT.publishTopic = "Zucchini";
+                firstRoot = "Zucchini";
                 break;
             case 5:
-                myMQTT.publishTopic = "Cucumber";
+                firstRoot = "Cucumber";
                 break;
             case 6:
-                myMQTT.publishTopic = "Melon";
+                firstRoot = "Melon";
                 break;
             case 7:
-                myMQTT.publishTopic = "Watermelon";
+                firstRoot = "Watermelon";
                 break;
         }
     }

@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     String WatermelonLight, WatermelonTemperature, WatermelonHumidity, WatermelonDate = "---";
 
     ExecutorService es;//[MGM] Background
-    Handler handler;
+   // Handler handler;
     MQTTClient Greenhouse;
 
     @Override
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         mqttConnectOptions.setCleanSession(false);
 
         //Last Will message
-        mqttConnectOptions.setWill(Greenhouse.publishTopic,Greenhouse.LWillmessage.getBytes(),1,false);
+        mqttConnectOptions.setWill(Greenhouse.publishTopic,Greenhouse.LWillmessage.getBytes(),0,false);
 
         try {
             Greenhouse.mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
@@ -150,29 +150,42 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        handler = new Handler(Looper.getMainLooper()) { //Handler for the message received from the background. Depending on the key (topic), the message will be assigned to a specif String variable
-            @Override                                   //Then, the attributes (Temperature, Humidity and Light) of each item are updated.
-            public void handleMessage(Message inputMessage) {
-                TomatoLight = inputMessage.getData().getString("Tomato/Light");
-                TomatoTemperature = inputMessage.getData().getString("Tomato/Temperature");
+
+        es = Executors.newSingleThreadExecutor();
+        MQTTSub task = new MQTTSub(handler, Greenhouse);
+        es.execute(task);
+
+
+    }
+
+    Handler handler = new Handler(Looper.getMainLooper()) { //Handler for the message received from the background. Depending on the key (topic), the message will be assigned to a specif String variable
+        @Override                                   //Then, the attributes (Temperature, Humidity and Light) of each item are updated.
+        public void handleMessage(Message inputMessage) {
+            this.obtainMessage();
+            TomatoLight = inputMessage.getData().getString("Tomato/Light");
+            recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
+            TomatoTemperature = inputMessage.getData().getString("Tomato/Temperature");
                 TomatoHumidity = inputMessage.getData().getString("Tomato/Humidity");
                 TomatoDate = inputMessage.getData().getString("Tomato/Date");
                 recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
-                if(Float.parseFloat(TomatoTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(0).setStatus(false);
-                }else if(Float.parseFloat((TomatoTemperature)) < R.dimen.MINTEMP){
-                    recyclerViewAdapter.getItemWithKey(0).setStatus(false);
+                if(TomatoTemperature != null) {
+                    if (Float.parseFloat(TomatoTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(0).setStatus(false);
+                    } else if (Float.parseFloat((TomatoTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(0).setStatus(false);
+                    }
                 }
-
                 PepperLight = inputMessage.getData().getString("Pepper/Light");
                 PepperTemperature = inputMessage.getData().getString("Pepper/Temperature");
                 PepperHumidity = inputMessage.getData().getString("Pepper/Humidity");
                 PepperDate = inputMessage.getData().getString("Pepper/Date");
                 recyclerViewAdapter.getItemWithKey(1).setParameters(PepperLight,PepperHumidity, PepperTemperature, PepperDate);
-                if(Float.parseFloat(PepperTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(1).setStatus(false);
-                }else if(Float.parseFloat((PepperTemperature)) < R.dimen.MINTEMP) {
-                    recyclerViewAdapter.getItemWithKey(1).setStatus(false);
+                if(PepperTemperature!= null) {
+                    if (Float.parseFloat(PepperTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(1).setStatus(false);
+                    } else if (Float.parseFloat((PepperTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(1).setStatus(false);
+                    }
                 }
 
                 EggplantLight = inputMessage.getData().getString("Eggplant/Light");
@@ -180,10 +193,12 @@ public class MainActivity extends AppCompatActivity {
                 EggplantHumidity = inputMessage.getData().getString("Eggplant/Humidity");
                 EggplantDate = inputMessage.getData().getString("Eggplant/Date");
                 recyclerViewAdapter.getItemWithKey(2).setParameters(EggplantLight,EggplantHumidity, EggplantTemperature, EggplantDate);
-                if(Float.parseFloat(EggplantTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(2).setStatus(false);
-                }else if(Float.parseFloat((EggplantTemperature)) < R.dimen.MINTEMP){
-                    recyclerViewAdapter.getItemWithKey(2).setStatus(false);
+                if(EggplantTemperature != null) {
+                    if (Float.parseFloat(EggplantTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(2).setStatus(false);
+                    } else if (Float.parseFloat((EggplantTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(2).setStatus(false);
+                    }
                 }
 
 
@@ -192,10 +207,12 @@ public class MainActivity extends AppCompatActivity {
                 GreenBeanHumidity = inputMessage.getData().getString("GreenBean/Humidity");
                 GreenBeanDate = inputMessage.getData().getString("GreenBean/Date");
                 recyclerViewAdapter.getItemWithKey(3).setParameters(GreenBeanLight,GreenBeanHumidity, GreenBeanTemperature, GreenBeanDate);
-                if(Float.parseFloat(GreenBeanTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(3).setStatus(false);
-                }else if(Float.parseFloat((GreenBeanTemperature)) < R.dimen.MINTEMP) {
-                    recyclerViewAdapter.getItemWithKey(3).setStatus(false);
+                if(GreenBeanTemperature != null) {
+                    if (Float.parseFloat(GreenBeanTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(3).setStatus(false);
+                    } else if (Float.parseFloat((GreenBeanTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(3).setStatus(false);
+                    }
                 }
 
                 ZucchiniLight = inputMessage.getData().getString("Zucchini/Light");
@@ -203,10 +220,12 @@ public class MainActivity extends AppCompatActivity {
                 ZucchiniHumidity = inputMessage.getData().getString("Zucchini/Humidity");
                 ZucchiniDate = inputMessage.getData().getString("Zucchini/Date");
                 recyclerViewAdapter.getItemWithKey(4).setParameters(ZucchiniLight,ZucchiniHumidity, ZucchiniTemperature, ZucchiniDate);
-                if(Float.parseFloat(ZucchiniTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(4).setStatus(false);
-                }else if(Float.parseFloat((ZucchiniTemperature)) < R.dimen.MINTEMP) {
-                    recyclerViewAdapter.getItemWithKey(4).setStatus(false);
+                if(ZucchiniTemperature != null) {
+                    if (Float.parseFloat(ZucchiniTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(4).setStatus(false);
+                    } else if (Float.parseFloat((ZucchiniTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(4).setStatus(false);
+                    }
                 }
 
 
@@ -215,10 +234,12 @@ public class MainActivity extends AppCompatActivity {
                 CucumberHumidity = inputMessage.getData().getString("Cucumber/Humidity");
                 CucumberDate = inputMessage.getData().getString("Cucumber/Date");
                 recyclerViewAdapter.getItemWithKey(5).setParameters(CucumberLight,CucumberHumidity, CucumberTemperature, CucumberDate);
-                if(Float.parseFloat(CucumberTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(5).setStatus(false);
-                }else if(Float.parseFloat((CucumberTemperature)) < R.dimen.MINTEMP) {
-                    recyclerViewAdapter.getItemWithKey(5).setStatus(false);
+                if(CucumberTemperature != null) {
+                    if (Float.parseFloat(CucumberTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(5).setStatus(false);
+                    } else if (Float.parseFloat((CucumberTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(5).setStatus(false);
+                    }
                 }
 
 
@@ -227,10 +248,12 @@ public class MainActivity extends AppCompatActivity {
                 MelonHumidity = inputMessage.getData().getString("Melon/Humidity");
                 MelonDate = inputMessage.getData().getString("Melon/Date");
                 recyclerViewAdapter.getItemWithKey(6).setParameters(MelonLight,MelonHumidity, MelonTemperature, MelonDate);
-                if(Float.parseFloat(MelonTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(6).setStatus(false);
-                }else if(Float.parseFloat((MelonTemperature)) < R.dimen.MINTEMP) {
-                    recyclerViewAdapter.getItemWithKey(6).setStatus(false);
+                if(MelonTemperature!= null) {
+                    if (Float.parseFloat(MelonTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(6).setStatus(false);
+                    } else if (Float.parseFloat((MelonTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(6).setStatus(false);
+                    }
                 }
 
 
@@ -239,21 +262,16 @@ public class MainActivity extends AppCompatActivity {
                 WatermelonHumidity = inputMessage.getData().getString("Watermelon/Humidity");
                 WatermelonDate = inputMessage.getData().getString("Watermelon/Date");
                 recyclerViewAdapter.getItemWithKey(7).setParameters(WatermelonLight,WatermelonHumidity, WatermelonTemperature, WatermelonDate);
-                if(Float.parseFloat(WatermelonTemperature) > R.dimen.MAXTEMP){
-                    recyclerViewAdapter.getItemWithKey(7).setStatus(false);
-                }else if(Float.parseFloat((WatermelonTemperature)) < R.dimen.MINTEMP) {
-                    recyclerViewAdapter.getItemWithKey(7).setStatus(false);
+                if(WatermelonTemperature != null) {
+                    if (Float.parseFloat(WatermelonTemperature) > R.dimen.MAXTEMP) {
+                        recyclerViewAdapter.getItemWithKey(7).setStatus(false);
+                    } else if (Float.parseFloat((WatermelonTemperature)) < R.dimen.MINTEMP) {
+                        recyclerViewAdapter.getItemWithKey(7).setStatus(false);
+                    }
                 }
 
-            }
-        };
-        es = Executors.newSingleThreadExecutor();
-        MQTTSub task = new MQTTSub(handler, Greenhouse);
-        es.execute(task);
-
-
-    }
-
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -315,27 +333,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void seeCurrentSelection(View view) {
-        // Button "see current selection" has been clicked:
+    public void NewMeasurement(View view) {
+        // Button "New Measurement" has been clicked:
 
         Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
         // This iterator allows to navigate through the keys of the currently selected items.
         // Complete info on getSelection():
         // https://developer.android.com/reference/androidx/recyclerview/selection/SelectionTracker#getSelection()
-        // Complete info on class Selection (getSelection() returns an object of this class):
-        // https://developer.android.com/reference/androidx/recyclerview/selection/Selection
-
-        String text = "";
-        while (iteratorSelectedItemsKeys.hasNext()) {
-            text += iteratorSelectedItemsKeys.next().toString();
-            if (iteratorSelectedItemsKeys.hasNext()) {
-                text += ", ";
-            }
+        // Complete info on class Selection (getSelection() returns an object of this class):// https://developer.android.com/reference/androidx/recyclerview/selection/Selection
+        ArrayList<String> listofnames = new ArrayList<>();
+        for (int i = 0; i < listofitems.size(); i++){
+            listofnames.add(listofitems.get(i).getTitle());
         }
-        text = "Keys of currently selected items = \n" + text;
         Intent i = new Intent(this, SecondActivity.class);
-        i.putExtra("text", text);
+        i.putStringArrayListExtra("Names",listofnames);
         startActivity(i);
+        listofnames.clear();
     }
 
     public void Eliminate() {
