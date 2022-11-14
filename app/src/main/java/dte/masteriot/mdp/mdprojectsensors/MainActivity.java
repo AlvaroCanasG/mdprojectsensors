@@ -46,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String LOGSLOADWEBCONTENT = "LOGSLOADWEBCONTENT";
     private static final String TAG = "ListOfItems, MainActivity";
 
+    MyApplication myApplication = (MyApplication) this.getApplication();
     // App-specific dataset:
-    private static final List<Item> listofitems = new ArrayList<>();
+    List<Item> listofitems =  myApplication.getListofitems();
     private static boolean listofitemsinitialized = false;
 
     private RecyclerView recyclerView;
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private SelectionTracker tracker;
     private MyOnItemActivatedListener onItemActivatedListener;
     private Object next;
-    String TomatoLight, TomatoTemperature, TomatoHumidity, TomatoDate = "---";
+
+    String  TomatoLight,TomatoTemperature, TomatoHumidity, TomatoDate = "---";
     String EggplantLight, EggplantTemperature, EggplantHumidity, EggplantDate = "---";
     String PepperLight, PepperTemperature, PepperHumidity, PepperDate = "---";
     String GreenBeanLight, GreenBeanTemperature, GreenBeanHumidity, GreenBeanDate = "---";
@@ -63,7 +65,29 @@ public class MainActivity extends AppCompatActivity {
     String CucumberLight, CucumberTemperature, CucumberHumidity, CucumberDate = "---";
     String MelonLight, MelonTemperature, MelonHumidity, MelonDate = "---";
     String WatermelonLight, WatermelonTemperature, WatermelonHumidity, WatermelonDate = "---";
+    /*
+        String TomatoLight = myApplication.getTomatoLight();
+        String TomatoTemperature = myApplication.getTomatoTemperature();
+        String TomatoHumidity = myApplication.getTomatoHumidity();
+        String TomatoDate = myApplication.getTomatoDate();
 
+        String EggplantLight = myApplication.getEggplantLight();
+        String EggplantTemperature = myApplication.getEggplantTemperature();
+        String EggplantHumidity = myApplication.getEggplantHumidity();
+        String EggplantDate = myApplication.getEggplantDate();
+        String PepperLight = myApplication.getPepperLight();
+        String PepperTemperature = myApplication.getPepperTemperature();
+        String PepperHumidity = myApplication.getPepperHumidity();
+        String PepperDate = myApplication.getPepperDate();
+        String GreenBeanLight = myApplication.getGreenBeanLight();
+        String GreenBeanTemperature = myApplication.getGreenBeanTemperature();
+        String GreenBeanHumidity = myApplication.getGreenBeanHumidity();
+        String GreenBeanDate = myApplication.getGreenBeanDate();
+        String ZucchiniLight = myApplication.getZucchiniLight();
+        String ZucchiniTemperature = myApplication.getZucchiniTemperature();
+        String ZucchiniHumidity = myApplication.getZucchiniHumidity();
+        String ZucchiniDate = myApplication.getZucchiniDate();
+        */
     ExecutorService es;//[MGM] Background
     Handler handler;
     MQTTClient Greenhouse;
@@ -74,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Initialize the list of items (the dataset):
-        initListOfItems();
+        //initListOfItems();
 
         // Prepare the RecyclerView:
         recyclerView = findViewById(R.id.recyclerView);
@@ -160,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
                 TomatoTemperature = inputMessage.getData().getString("Tomato/Temperature");
                 TomatoHumidity = inputMessage.getData().getString("Tomato/Humidity");
                 TomatoDate = inputMessage.getData().getString("Tomato/Date");
+                recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
+
                 recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
                 if(Float.parseFloat(TomatoTemperature) > R.dimen.MAXTEMP){
                     recyclerViewAdapter.getItemWithKey(0).setStatus(false);
@@ -298,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ------ Initialization of the dataset ------ //
-
+/*
     private void initListOfItems () {
 
         listofitems.add(new Item("Tomato", TomatoLight,TomatoHumidity,TomatoTemperature,TomatoDate, "March - April - May" , (long) 0 , R.drawable.tomato, true ));
@@ -313,6 +339,8 @@ public class MainActivity extends AppCompatActivity {
         listofitemsinitialized = true;
 
     }
+
+ */
 
     // ------ Buttons' on-click listeners ------ //
 
