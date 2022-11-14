@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -23,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -95,8 +98,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_delete:
                 confirmation();
                 return true;
-            case R.id.menu_select_all:
-
+            case R.id.sort_AZ:
+                Collections.sort(listofitems, GreenhouseAZ);
+                Toast.makeText(MainActivity.this, "Sort A to Z", Toast.LENGTH_SHORT).show();
+                recyclerViewAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.sort_za:
+                Collections.sort(listofitems, GreenhouseZA);
+                Toast.makeText(MainActivity.this, "Sort Z to A", Toast.LENGTH_SHORT).show();
+                recyclerViewAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.sort_status:
+                Collections.sort(listofitems, GreenhouseStatus);
+                Toast.makeText(MainActivity.this, "Sort by Status", Toast.LENGTH_SHORT).show();
+                recyclerViewAdapter.notifyDataSetChanged();
                 return true;
         }
 
@@ -211,6 +226,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public static Comparator<Item> GreenhouseAZ = new Comparator<Item>() {
+        @Override
+        public int compare(Item t1, Item t2) {
+
+            return t1.getTitle().compareTo(t2.getTitle());
+        }
+    };
+    public static Comparator<Item> GreenhouseZA = new Comparator<Item>() {
+        @Override
+        public int compare(Item t1, Item t2) {
+
+            return t2.getTitle().compareTo(t1.getTitle());
+        }
+    };
+    public static Comparator<Item> GreenhouseStatus = new Comparator<Item>() {
+        @Override
+        public int compare(Item t1, Item t2) {
+
+            return Boolean.compare(t1.getStatus(),t2.getStatus());
+        }
+    };
     /*
     public void buttonAsyncListener(View view) {
         //Log.d(logTag, "Scheduling new task in background thread");

@@ -9,9 +9,12 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_select_all"
-        android:title="Select All"
-        android:icon="@drawable/ic_select_all_24"
-        app:showAsAction="always"
-        />
+        android:id="@+id/sort_AZ"
+        android:title="A -> Z" />
+    <item
+        android:id="@+id/sort_za"
+        android:title="Z -> A" />
+    <item
+        android:id="@+id/sort_status"
+        android:title="Status" />
 </menu>
