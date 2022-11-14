@@ -36,23 +36,17 @@ public class MyOnItemActivatedListener implements OnItemActivatedListener {
         // when no selection exists and the user taps an item with her finger,
         // or double clicks an item with a pointing device like a Mouse."
 
-        /*
-        Log.d(TAG, "Clicked item with position = " + itemdetails.getPosition()
-                + " and key = " + itemdetails.getSelectionKey());
-        */
         Intent i = new Intent(context, ThirdActivity.class);
-        i.putExtra("text", "Clicked item with position = " + itemdetails.getPosition()
-                + " and key = " + itemdetails.getSelectionKey());
-        context.startActivity(i);
-        return true;
-
-
-        /*
         Item selecteditem = adapter.getItemAtPosition(itemdetails.getPosition());
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(selecteditem.getStringURI()));
+             i.putExtra("Light", selecteditem.getLight());
+             i.putExtra("Humidity", selecteditem.getHumidity());
+             i.putExtra("Temperature", selecteditem.getTemperature());
+             i.putExtra("Date", selecteditem.getDate());
+             i.putExtra("Name", selecteditem.getTitle());
+
         context.startActivity(i);
         return true;
-        */
+
 
     }
 

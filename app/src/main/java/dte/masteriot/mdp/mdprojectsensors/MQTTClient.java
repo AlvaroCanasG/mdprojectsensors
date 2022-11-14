@@ -23,6 +23,8 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -35,6 +37,7 @@ public class MQTTClient extends AppCompatActivity {
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
     Calendar calendar;
+    String subscriptionTopic = "topic";
     @SuppressLint("SimpleDateFormat")
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEE d MMM HH:mm:ss");
     final String LWillmessage = "disconnected";
@@ -61,7 +64,6 @@ public class MQTTClient extends AppCompatActivity {
 
     public void publishMessage(String measurement) throws MqttException {
         calendar = Calendar.getInstance();
-        String date = dateFormat.format(calendar.getTime());
 
         MqttMessage message = new MqttMessage();
         message.setPayload(measurement.getBytes());
@@ -70,5 +72,22 @@ public class MQTTClient extends AppCompatActivity {
         if (!mqttAndroidClient.isConnected()) {
             SendNotification("Not connected");
         }
+    }
+
+    public void subscribeToTopic()  {
+        try {
+            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
     }
 }

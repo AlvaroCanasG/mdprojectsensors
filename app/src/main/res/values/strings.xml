@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Greenhouse APP</string>
+    <string name="app_name">MDProjectSensors</string>
     <string name="light_sensor_off">Light\nOFF</string>
     <string name="light_sensor_on">Light\nON</string>
     <string name="accelerometer_sensor_off">Accel.\nOFF</string>
@@ -26,12 +26,30 @@
     <string-array name="Greenhouses_array">
         <item>Tomato</item>
         <item>Pepper</item>
-        <item>EggPlant</item>
+        <item>Eggplant</item>
         <item>Green bean</item>
-        <item>Zuchinni</item>
+        <item>Zucchini</item>
         <item>Cucumber</item>
         <item>Melon</item>
         <item>Watermelon</item>
     </string-array>
+    <string name="tomato_long">-2.52771 </string>
+    <string name="tomato_lat">36.9853</string>
+    <string name="pepper_long">-2.5742300</string>
+    <string name="pepper_lat">38.8068400</string>
+    <string name="egg_long">-3.70024025834118 </string>
+    <string name="egg_lat">40.3934913</string>
+    <string name="bean_long">-2.749116</string>
+    <string name="bean_lat">36.787305 </string>
+    <string name="zuc_long">-2.766667</string>
+    <string name="zuc_lat">37.133333</string>
+    <string name="cuc_long">-2.783333</string>
+    <string name="cuc_lat">37.133333</string>
+    <string name="melon_long">36.833333</string>
+    <string name="melon_lat">-2.45</string>
+    <string name="wat_long">-2.95</string>
+    <string name="wat_lat">36.85</string>
+    <item name="MAXTEMP" format="float" type="dimen">30.0</item>
+    <item name="MINTEMP" format="float" type="dimen">10.0</item>
 
 </resources>

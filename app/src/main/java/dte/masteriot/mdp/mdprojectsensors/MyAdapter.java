@@ -2,18 +2,11 @@ package dte.masteriot.mdp.mdprojectsensors;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -84,14 +77,18 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
         return (items.get(pos).getKey());
     }
 
+
+
     public int getPositionOfKey(Long searchedkey) {
         // Look for the position of the Item with key = searchedkey.
         // The following works because in Item, the method "equals" is overriden to compare only keys:
-        int position = items.indexOf(new Item("placeholder", "placeholder","placeholder", searchedkey, 0, true));
+        int position = items.indexOf(new Item("placeholder", "placeholder","placeholder","placeholder", "placeholder,","placeholder", searchedkey, 0, true));
         Log.d(TAG, "getPositionOfKey() called for key " + searchedkey + ", will return " + position);
         return position;
     }
-
+    public Item getItemWithKey(long key){ //Added for simplification
+        return(getItemAtPosition(getPositionOfKey(key)));
+    }
     public void setSelectionTracker(SelectionTracker selectionTracker) {
         this.selectionTracker = selectionTracker;
     }

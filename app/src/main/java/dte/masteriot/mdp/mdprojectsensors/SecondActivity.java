@@ -28,11 +28,14 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 public class SecondActivity extends AppCompatActivity implements SensorEventListener, AdapterView.OnItemSelectedListener {
     Calendar calendar;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     SimpleDateFormat dateFormat1 = new SimpleDateFormat("H");
     SimpleDateFormat dateFormat2 = new SimpleDateFormat("M");
     SimpleDateFormat dateFormat3 = new SimpleDateFormat("s");
@@ -45,6 +48,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     TextView tvSensorValue;
     TextView tvTempValue;
     TextView tvHumidityValue;
+
 
 
     private SensorManager sensorManager;
@@ -76,35 +80,45 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                 } else if (!GreenhouseSelected) {
                             myMQTT.SendNotification("Please select a Greenhouse");
                         } else {
-                                if (lightSensorIsActive) {
-                                    myMQTT.publishTopic = myMQTT.publishTopic + "/Light";
-                                    try {
-                                        myMQTT.publishMessage(lightMeasurement);
-                                    } catch (MqttException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                if (temperatureSensorIsActive) {
-                                        myMQTT.publishTopic = myMQTT.publishTopic + "/Temperature";
-                                        try {
-                                            myMQTT.publishMessage(temperatureMeasurement);
-                                        } catch (MqttException e) {
-                                           e.printStackTrace();
-                                        }
-                                }
-                                if (humiditySensorIsActive) {
-                                    myMQTT.publishTopic = myMQTT.publishTopic + "/Humidity";
-                                    try {
-                                        myMQTT.publishMessage(humidityMeasurement);
-                                    } catch (MqttException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
                                 if(!(humiditySensorIsActive | temperatureSensorIsActive | lightSensorIsActive)){
                                     myMQTT.SendNotification("No sensor ON");
+                                } else {
+                                        myMQTT.publishTopic = myMQTT.publishTopic + "/Date";
+                                        calendar = Calendar.getInstance();
+                                        String date = dateFormat.format(calendar.getTime());
+                                        try {
+                                            myMQTT.publishMessage(date);
+                                        } catch (MqttException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        if (lightSensorIsActive) {
+                                                myMQTT.publishTopic = myMQTT.publishTopic + "/Light";
+                                                try {
+                                                    myMQTT.publishMessage(lightMeasurement);
+                                                } catch (MqttException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        if (temperatureSensorIsActive) {
+                                                myMQTT.publishTopic = myMQTT.publishTopic + "/Temperature";
+                                                try {
+                                                    myMQTT.publishMessage(temperatureMeasurement);
+                                                } catch (MqttException e) {
+                                                   e.printStackTrace();
+                                                }
+                                        }
+                                        if (humiditySensorIsActive) {
+                                            myMQTT.publishTopic = myMQTT.publishTopic + "/Humidity";
+                                            try {
+                                                myMQTT.publishMessage(humidityMeasurement);
+                                            } catch (MqttException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
                                 }
-                            }
-            }
+                        }
+                }
         });
 
         myMQTT.clientId = "id";
@@ -184,7 +198,11 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         //MGM
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+        List<Item> listofitems = ((MyApplication) this.getApplication()).getListofitems();
+        //List<Item> listofitems = new ArrayList<>()
+        ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_item , listofitems);
+
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -273,7 +291,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         lightMeasurement = String.format("%.01f",sensorEvent.values[0]);
-        tvSensorValue.setText(lightMeasurement+"%");
+        tvSensorValue.setText(lightMeasurement);
     }
 
     
@@ -310,33 +328,34 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         // In this app we do nothing if sensor's accuracy changes
     }
 
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         GreenhouseSelected = true;
         switch (i) {
             case 0:
-                myMQTT.publishTopic = "GreenhouseA";
+                myMQTT.publishTopic = "Tomato";
                 break;
             case 1:
-                myMQTT.publishTopic = "GreenhouseB";
+                myMQTT.publishTopic = "Pepper";
                 break;
             case 2:
-                myMQTT.publishTopic = "GreenhouseC";
+                myMQTT.publishTopic = "Eggplant";
                 break;
             case 3:
-                myMQTT.publishTopic = "GreenhouseD";
+                myMQTT.publishTopic = "GreenBean";
                 break;
             case 4:
-                myMQTT.publishTopic = "GreenhouseE";
+                myMQTT.publishTopic = "Zucchini";
                 break;
             case 5:
-                myMQTT.publishTopic = "GreenhouseF";
+                myMQTT.publishTopic = "Cucumber";
                 break;
             case 6:
-                myMQTT.publishTopic = "GreenhouseG";
+                myMQTT.publishTopic = "Melon";
                 break;
             case 7:
-                myMQTT.publishTopic = "GreenhouseH";
+                myMQTT.publishTopic = "Watermelon";
                 break;
         }
     }

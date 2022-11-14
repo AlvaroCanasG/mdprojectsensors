@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,31 +21,35 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ThirdActivity extends AppCompatActivity {
     public static final String LOGSLOADWEBCONTENT = "LOGSLOADWEBCONTENT"; // to easily filter logs
     private String logTag; // to clearly identify logs
-    //private static final String URL_PARKS = "https://short.upm.es/3qnno";
-    private static final String URL_PARKS = "https://api.open-meteo.com/v1/forecast?latitude=51.5002&longitude=-0.1262&hourly=temperature_2m,relativehumidity_2m,cloudcover&timezone=Europe%2FLondon&start_date=2022-11-01&end_date=2022-11-01";
-
-
+    private static final String URL_API = "https://api.open-meteo.com/v1/forecast?latitude=51.5002&longitude=-0.1262&hourly=temperature_2m,relativehumidity_2m,cloudcover&timezone=Europe%2FLondon&start_date=2022-11-01&end_date=2022-11-01";
+    private static final String URL_API1 ="https://api.open-meteo.com/v1/forecast?";
+    private static final String LAT ="latitude=";
+    private static final String LONG="&longitude=";
+    private static final String PAR= "&hourly=temperature_2m,relativehumidity_2m,cloudcover&timezone=Europe%2FLondon&";
+    private static final String D_START="start_date=";
+    private static final String D_END = "&end_date=";
     private static final String CONTENT_TYPE_JSON = "application/json";
-
-    private String time_now,temp_now,hum_now,cloud_now;
-    private Button btPNG;
-    private Button btJSON;
-    private Button btKML;
-    private TextView text;
-    private ImageView imgView;
+    private String lat, lon;
+    private String time_now,temp_now,hum_now,cloud_now, Light, Temperature, Humidity, Date, Name;
+    private TextView textTemp_api,textHum_api,textCloud_api,textTemp_mqtt,textHum_mqtt,textCloud_mqtt, textName, textEnergy, textDesv;
     ExecutorService es;
-
+    private Integer hour_index;
+    private Integer optimalVal;
+    private double energy, desv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +60,81 @@ public class ThirdActivity extends AppCompatActivity {
                 this.getClass().getName().substring(this.getClass().getName().lastIndexOf(".") + 1);
 
         // Get references to UI elements:
-
-        //btJSON = findViewById(R.id.loadJSON);
-
-        imgView = findViewById(R.id.imageView);
-
+        textTemp_api = findViewById(R.id.temp_api);
+        textHum_api = findViewById(R.id.hum_api);
+        textCloud_api = findViewById(R.id.cloud_api);
+        textTemp_mqtt = findViewById(R.id.temp_text);
+        textHum_mqtt = findViewById(R.id.hum_text);
+        textCloud_mqtt = findViewById(R.id.cloud_text);
+        textName = findViewById(R.id.name_gh);
+        textEnergy = findViewById(R.id.text_energy);
+        textDesv = findViewById(R.id.text_desv);
+        // Get measures and time from subscriber
+        Intent inputIntent = getIntent();
+        Light = inputIntent.getStringExtra("Light");
+        Humidity = inputIntent.getStringExtra("Humidity");
+        Temperature = inputIntent.getStringExtra("Temperature");
+        Date = inputIntent.getStringExtra("Date");
+        Name = inputIntent.getStringExtra("Name");
+        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD");
+        //String []part=Date.split(" ");
+        //String [] full_time = part[1].split(":");
+        /*try{
+            //for getting all measures in correct index
+            hour_index = Integer.parseInt(full_time[0]);
+        }
+        catch (NumberFormatException ex){
+            ex.printStackTrace();
+        }*/
+        //String date_2_api=part[0]:
+        //String full_URL = URL_API1+LAT+lat+LONG+lon+PAR+D_START+date_2_api+D_END+date_2_api;
+        switch (Name){
+            case "Tomato":
+                lat= getString(R.string.tomato_lat);
+                lon = getString(R.string.tomato_long);
+                optimalVal = getResources().getInteger(R.integer.Tomato);
+                break;
+            case "Pepper":
+                lat= getString(R.string.pepper_lat);
+                lon = getString(R.string.pepper_long);
+                optimalVal = getResources().getInteger(R.integer.Pepper);
+                break;
+            case "Eggplant":
+                lat= getString(R.string.egg_lat);
+                lon = getString(R.string.egg_long);
+                optimalVal = getResources().getInteger(R.integer.Eggplant);
+                break;
+            case "Watermelon":
+                lat= getString(R.string.wat_lat);
+                lon = getString(R.string.wat_long);
+                optimalVal = getResources().getInteger(R.integer.Watermelon);
+                break;
+            case "Zucchini":
+                lat= getString(R.string.zuc_lat);
+                lon = getString(R.string.zuc_long);
+                optimalVal = getResources().getInteger(R.integer.Zucchini);
+                break;
+            case "Cucumber":
+                lat= getString(R.string.cuc_lat);
+                lon = getString(R.string.cuc_long);
+                optimalVal = getResources().getInteger(R.integer.Cucumber);
+                break;
+            case "Melon":
+                lat= getString(R.string.melon_lat);
+                lon = getString(R.string.melon_long);
+                optimalVal = getResources().getInteger(R.integer.Melon);
+                break;
+            default:
+                lat= getString(R.string.bean_lat);
+                lon = getString(R.string.bean_long);
+                optimalVal = getResources().getInteger(R.integer.Green_bean);
+                break;
+        }
+        String full_URL = URL_API1+LAT+lat+LONG+lon+PAR+D_START+"2022-11-01"+D_END+"2022-11-01";
         // Create an executor for the background tasks:
         es = Executors.newSingleThreadExecutor();
+        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, full_URL);
+        es.execute(loadURLContents);
     }
 
     // Define the handler that will receive the messages from the background thread:
@@ -70,7 +144,6 @@ public class ThirdActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             // message received from background thread: load complete (or failure)
             String string_result;
-            Bitmap bitmap;
 
             super.handleMessage(msg);
             Log.d(logTag, "message received from background thread");
@@ -94,11 +167,7 @@ public class ThirdActivity extends AppCompatActivity {
                     }
                     LocalDateTime now = java.time.LocalDateTime.now();
                     Integer hour = now.toLocalTime().getHour();
-                    String tim,temp,hum, cloud;
-                    tim   = timeArray.get(hour);
-                    temp  = tempArray.get(hour);
-                    hum   = humArray.get(hour);
-                    cloud = cloudArray.get(hour);
+
                     time_now  = timeArray.get(hour);
                     temp_now  = tempArray.get(hour);
                     hum_now   = humArray.get(hour);
@@ -107,26 +176,53 @@ public class ThirdActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                text.setText(string_result);
+
+                try {                                  //temp_mqtt
+                    Double tempInt = Double.parseDouble("29");
+                    Double tempExt = Double.parseDouble(temp_now.toString());
+                    desv =(Math.abs(tempInt-optimalVal)/optimalVal)*100;
+                    Double absEnergy = Math.abs(tempInt-tempExt);
+                    if (absEnergy <= 5){
+                        energy = 10*absEnergy;
+                    }else{
+                        if (absEnergy <= 10){
+                            energy = 11*absEnergy -5;
+                        }else{
+                            if(absEnergy <= 15){
+                                energy = 3.2*absEnergy +73;
+                            }else{
+                                energy = 3.2*absEnergy +50;
+                            }
+                        }
+                    }
+
+                }catch (NumberFormatException ex){
+                    ex.printStackTrace();
+
+                }
+
+                //from weather api
+                textTemp_api.setText(temp_now+"ºC");
+                textHum_api.setText(hum_now+"%");
+                textCloud_api.setText(cloud_now+"%");
+                //from mqtt
+                textTemp_mqtt.setText("27ºC");
+                textHum_mqtt.setText("50%");
+                textCloud_mqtt.setText("10%");
+                //formulas
+                NumberFormat formatter = new DecimalFormat("0.00");
+                textEnergy.setText(formatter.format(energy)+" W/m2");
+                textDesv.setText(formatter.format(desv)+"%");
             }
-            toggle_buttons(true); // re-enable the buttons
         }
     };
 
 
     public void readJSON(View view) {
-        toggle_buttons(false); // disable the buttons until the load is complete
-        text.setText("Loading " + URL_PARKS + "..."); // Inform the user by means of the TextView
-
         // Execute the loading task in background:
-        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, URL_PARKS);
+        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, URL_API);
         es.execute(loadURLContents);
     }
 
-
-    private void toggle_buttons(boolean state) {
-        // enable or disable buttons (depending on state)
-        btJSON.setEnabled(state);
-    }
 
 }
