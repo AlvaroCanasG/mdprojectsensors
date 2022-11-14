@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MDProjectSensors</string>
+    <string name="app_name">Greenhouse APP</string>
     <string name="light_sensor_off">Light\nOFF</string>
     <string name="light_sensor_on">Light\nON</string>
     <string name="accelerometer_sensor_off">Accel.\nOFF</string>
@@ -24,14 +24,14 @@
     <string name="D_Temperature">GreenHouseD/Temperature</string>
     <string name="D_Humidity">GreenHouseD/Humidity</string>
     <string-array name="Greenhouses_array">
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>H</item>
+        <item>Tomato</item>
+        <item>Pepper</item>
+        <item>EggPlant</item>
+        <item>Green bean</item>
+        <item>Zuchinni</item>
+        <item>Cucumber</item>
+        <item>Melon</item>
+        <item>Watermelon</item>
     </string-array>
 
 </resources>
