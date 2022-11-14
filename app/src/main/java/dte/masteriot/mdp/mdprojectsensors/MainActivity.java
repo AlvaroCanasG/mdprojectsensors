@@ -312,35 +312,9 @@ public class MainActivity extends AppCompatActivity {
 
         listofitemsinitialized = true;
 
-
-
-
-        // Populate the list of items if not done before:
-        /*final int ITEM_COUNT = 50;
-        if (listofitemsinitialized == false) {
-            for (int i = 0; i < ITEM_COUNT; ++i) {
-                listofitems.add(new Item("Item " + i, "This is the item number " + i, (long) i));
-            }
-            listofitemsinitialized = true;
-        }*/
-
     }
 
     // ------ Buttons' on-click listeners ------ //
-/*
-    public void listLayout(View view) {
-        // Button to see in a linear fashion has been clicked:
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    public void gridLayout(View view) {
-        // Button to see in a grid fashion has been clicked:
-        //recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-
-        Intent i = new Intent(MainActivity.this, ThirdActivity.class);
-        startActivity(i);
-    }
-*/
 
     public void seeCurrentSelection(View view) {
         // Button "see current selection" has been clicked:
@@ -420,14 +394,6 @@ public class MainActivity extends AppCompatActivity {
             return Boolean.compare(t1.getStatus(),t2.getStatus());
         }
     };
-    /*
-    public void buttonAsyncListener(View view) {
-        //Log.d(logTag, "Scheduling new task in background thread");
-        es.execute(new LengthyTask());
-    }
 
-    Test1 Git
-    Test2
-     */
 
 }

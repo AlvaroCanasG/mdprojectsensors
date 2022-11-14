@@ -200,9 +200,9 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         //MGM
         List<Item> listofitems = ((MyApplication) this.getApplication()).getListofitems();
         //List<Item> listofitems = new ArrayList<>()
-        ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_item , listofitems);
+        //ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_item , listofitems);
 
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);

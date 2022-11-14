@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MDProjectSensors</string>
+    <string name="app_name">Greenhouse APP</string>
     <string name="light_sensor_off">Light\nOFF</string>
     <string name="light_sensor_on">Light\nON</string>
     <string name="accelerometer_sensor_off">Accel.\nOFF</string>
