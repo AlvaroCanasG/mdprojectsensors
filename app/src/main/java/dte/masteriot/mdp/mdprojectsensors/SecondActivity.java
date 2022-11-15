@@ -28,7 +28,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +54,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
     private SensorManager sensorManager;
     private Sensor lightSensor;
+    private Sensor accelerometer;
 
 
     boolean humiditySensorIsActive;
@@ -68,7 +68,8 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     String firstRoot;
     MQTTClient myMQTT;
     ArrayList<String> MyList;
-
+    float x,y,z, last_x,last_y,last_z;
+    long lastUpdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -223,6 +224,8 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         // Obtain the reference to the default light sensor of the device:
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(SecondActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         
 
@@ -303,8 +306,32 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     @SuppressLint("DefaultLocale")
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        lightMeasurement = String.format("%.01f",sensorEvent.values[0]);
-        tvSensorValue.setText(lightMeasurement);
+        if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
+            lightMeasurement = String.format("%.01f", sensorEvent.values[0]);
+            tvSensorValue.setText(lightMeasurement);
+        } else {
+            long curTime = System.currentTimeMillis();
+            // only allow one update every 100ms.
+            if ((curTime - lastUpdate) > 100) {
+                long diffTime = (curTime - lastUpdate);
+                    lastUpdate = curTime;
+                    x = sensorEvent.values[0];
+                    y = sensorEvent.values[1];
+                    z = sensorEvent.values[2];
+                    float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
+
+            if (speed > 800) {
+                bHumidity.callOnClick();
+                bLight.callOnClick();
+                bTemp.callOnClick();
+
+            }
+            last_x = x;
+            last_y = y;
+            last_z = z;
+        }
+
+        }
     }
 
     

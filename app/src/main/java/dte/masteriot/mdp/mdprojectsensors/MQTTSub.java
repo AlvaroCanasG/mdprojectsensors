@@ -32,11 +32,6 @@ public class MQTTSub implements Runnable{//This class executes a thread to handl
         msg_data = msg.getData();
 
 
-
-
-
-
-
         //Callback set for the client
         Greenhouse.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
