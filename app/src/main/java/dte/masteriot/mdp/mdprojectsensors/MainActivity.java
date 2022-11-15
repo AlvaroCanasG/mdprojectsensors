@@ -313,6 +313,10 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -355,8 +359,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void NewMeasurement(View view) {
         // Button "New Measurement" has been clicked:
-    public void seeCurrentSelection(View view) {
-        // Button "see current selection" has been clicked:
 
         Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
         // This iterator allows to navigate through the keys of the currently selected items.
@@ -373,19 +375,7 @@ public class MainActivity extends AppCompatActivity {
         listofnames.clear();
     }
 
-    public void Eliminate() {
-        // Button "see current selection" has been clicked:
-
-        Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
-
-        while (iteratorSelectedItemsKeys.hasNext()) {
-            recyclerViewAdapter.removeItem(Long.parseLong(iteratorSelectedItemsKeys.next().toString()));
-            //recyclerViewAdapter.notifyItemRemoved(Integer.parseInt(iteratorSelectedItemsKeys.next().toString()));
-        }
-        recyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    public void confirmation(){
+    private void confirmation() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want delete these items?")
                 .setCancelable(false)
@@ -404,8 +394,21 @@ public class MainActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-
     }
+
+    public void Eliminate() {
+        // Button "see current selection" has been clicked:
+
+        Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
+
+        while (iteratorSelectedItemsKeys.hasNext()) {
+            recyclerViewAdapter.removeItem(Long.parseLong(iteratorSelectedItemsKeys.next().toString()));
+            //recyclerViewAdapter.notifyItemRemoved(Integer.parseInt(iteratorSelectedItemsKeys.next().toString()));
+        }
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+
 
     public static Comparator<Item> GreenhouseAZ = new Comparator<Item>() {
         @Override
