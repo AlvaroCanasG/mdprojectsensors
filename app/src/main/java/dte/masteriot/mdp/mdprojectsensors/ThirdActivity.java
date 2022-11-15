@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,6 +63,7 @@ public class ThirdActivity extends AppCompatActivity {
         textName = findViewById(R.id.name_gh);
         textEnergy = findViewById(R.id.text_energy);
         textDesv = findViewById(R.id.text_desv);
+
         // Get measures and time from subscriber
         Intent inputIntent = getIntent();
         Light = inputIntent.getStringExtra("Light");
@@ -71,18 +71,42 @@ public class ThirdActivity extends AppCompatActivity {
         Temperature = inputIntent.getStringExtra("Temperature");
         Date = inputIntent.getStringExtra("Date");
         Name = inputIntent.getStringExtra("Name");
-        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD");
-        //String []part=Date.split(" ");
-        //String [] full_time = part[1].split(":");
-        /*try{
+        String []part=Date.split(" ");
+        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD "+part[0]);
+
+        //from mqtt
+        if(Temperature != null){
+            textTemp_mqtt.setText(Temperature + "ºC");
+        } else {
+            textTemp_mqtt.setText("No data");
+        }
+
+        if(Humidity != null) {
+            textHum_mqtt.setText(Humidity + "%");
+        } else {
+            textHum_mqtt.setText("No data");
+        }
+
+        if( Light != null) {
+            textCloud_mqtt.setText(Light);
+        } else {
+            textCloud_mqtt.setText("No data");
+        }
+
+/*
+        if (part.length > 0){
+            String [] full_time = part[1].split(":");
+            try{
             //for getting all measures in correct index
             hour_index = Integer.parseInt(full_time[0]);
-        }
-        catch (NumberFormatException ex){
-            ex.printStackTrace();
+            }
+            catch (NumberFormatException ex){
+                ex.printStackTrace();
+            }
+            String date_2_api=part[0];
+            String full_URL = URL_API1+LAT+lat+LONG+lon+PAR+D_START+date_2_api+D_END+date_2_api;
         }*/
-        //String date_2_api=part[0]:
-        //String full_URL = URL_API1+LAT+lat+LONG+lon+PAR+D_START+date_2_api+D_END+date_2_api;
+
         switch (Name){
             case "Tomato":
                 lat= getString(R.string.tomato_lat);
@@ -141,25 +165,7 @@ public class ThirdActivity extends AppCompatActivity {
         Temperature = inputIntent.getStringExtra("Temperature");
         Date = inputIntent.getStringExtra("Date");
         Name = inputIntent.getStringExtra("Name");
-        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD");
-        //from mqtt
-        if(Temperature != null){
-            textTemp_mqtt.setText(Temperature + "ºC");
-        } else {
-            textTemp_mqtt.setText("No data");
-        }
 
-        if(Humidity != null) {
-            textHum_mqtt.setText(Humidity + "%");
-        } else {
-            textHum_mqtt.setText("No data");
-        }
-
-        if( Light != null) {
-            textCloud_mqtt.setText(Light);
-        } else {
-            textCloud_mqtt.setText("No data");
-        }
     }
 
 
@@ -228,15 +234,12 @@ public class ThirdActivity extends AppCompatActivity {
                     }
                     }catch(NumberFormatException ex){
                         ex.printStackTrace();
-
-
                 }
 
                 //from weather api
                 textTemp_api.setText(temp_now+"ºC");
                 textHum_api.setText(hum_now+"%");
                 textCloud_api.setText(cloud_now+"%");
-
 
                 //formulas
                 NumberFormat formatter = new DecimalFormat("0.00");
@@ -245,13 +248,4 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }
     };
-
-
-    public void readJSON(View view) {
-        // Execute the loading task in background:
-        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, URL_API);
-        es.execute(loadURLContents);
-    }
-
-
 }
