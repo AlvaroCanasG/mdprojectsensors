@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void confirmation(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want delete ?")
+        builder.setMessage("Are you sure you want delete these items?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
