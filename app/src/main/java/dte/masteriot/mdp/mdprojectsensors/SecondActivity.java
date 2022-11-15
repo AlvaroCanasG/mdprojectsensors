@@ -27,6 +27,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -199,10 +200,15 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         //MGM
         List<Item> listofitems = ((MyApplication) this.getApplication()).getListofitems();
-        //List<Item> listofitems = new ArrayList<>()
-        //ArrayAdapter<Item> adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_spinner_item , listofitems);
+        ArrayList<String> Title = new ArrayList<>();
+        for (int i = 0; i<listofitems.size(); i++){
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+            Title.add(listofitems.get(i).getTitle());
+        }
+        //List<Item> listofitems = new ArrayList<>()
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item , Title);
+
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
