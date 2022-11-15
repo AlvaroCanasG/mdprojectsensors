@@ -47,7 +47,7 @@ public class Item {
     public String getDate(){ return Date;}
 
 
-    public void setParameters(String light, String temperature, String humidity, String date){
+    public void setParameters(String light, String humidity, String temperature, String date){
             Light = light;
             Temperature = temperature;
             Humidity = humidity;

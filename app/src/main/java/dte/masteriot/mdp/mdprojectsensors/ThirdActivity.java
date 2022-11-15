@@ -1,5 +1,15 @@
 package dte.masteriot.mdp.mdprojectsensors;
 
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,24 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +39,7 @@ public class ThirdActivity extends AppCompatActivity {
     private static final String D_END = "&end_date=";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private String lat, lon;
-    private String time_now,temp_now,hum_now,cloud_now, Light, Temperature, Humidity, Date, Name;
+    private String time_now,temp_now,hum_now,cloud_now, Light, Temperature, Humidity, Date, Name = "- - -";
     private TextView textTemp_api,textHum_api,textCloud_api,textTemp_mqtt,textHum_mqtt,textCloud_mqtt, textName, textEnergy, textDesv;
     ExecutorService es;
     private Integer hour_index;
@@ -137,6 +132,37 @@ public class ThirdActivity extends AppCompatActivity {
         es.execute(loadURLContents);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent inputIntent = getIntent();
+        Light = inputIntent.getStringExtra("Light");
+        Humidity = inputIntent.getStringExtra("Humidity");
+        Temperature = inputIntent.getStringExtra("Temperature");
+        Date = inputIntent.getStringExtra("Date");
+        Name = inputIntent.getStringExtra("Name");
+        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD");
+        //from mqtt
+        if(Temperature != null){
+            textTemp_mqtt.setText(Temperature + "ºC");
+        } else {
+            textTemp_mqtt.setText("No data");
+        }
+
+        if(Humidity != null) {
+            textHum_mqtt.setText(Humidity + "%");
+        } else {
+            textHum_mqtt.setText("No data");
+        }
+
+        if( Light != null) {
+            textCloud_mqtt.setText(Light);
+        } else {
+            textCloud_mqtt.setText("No data");
+        }
+    }
+
+
     // Define the handler that will receive the messages from the background thread:
     Handler handler = new Handler(Looper.getMainLooper()) {
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -177,27 +203,32 @@ public class ThirdActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                try {                                  //temp_mqtt
-                    Double tempInt = Double.parseDouble("29");
-                    Double tempExt = Double.parseDouble(temp_now.toString());
-                    desv =(Math.abs(tempInt-optimalVal)/optimalVal)*100;
-                    Double absEnergy = Math.abs(tempInt-tempExt);
-                    if (absEnergy <= 5){
-                        energy = 10*absEnergy;
-                    }else{
-                        if (absEnergy <= 10){
-                            energy = 11*absEnergy -5;
-                        }else{
-                            if(absEnergy <= 15){
-                                energy = 3.2*absEnergy +73;
-                            }else{
-                                energy = 3.2*absEnergy +50;
+                try {
+                    if (Temperature == null) {
+                        energy = 0;
+                        desv = 0;
+                    } else {
+                        Double tempInt = Double.parseDouble(Temperature);
+                        Double tempExt = Double.parseDouble(temp_now.toString());
+                        desv = (Math.abs(tempInt - optimalVal) / optimalVal) * 100;
+                        Double absEnergy = Math.abs(tempInt - tempExt);
+                        if (absEnergy <= 5) {
+                            energy = 10 * absEnergy;
+                        } else {
+                            if (absEnergy <= 10) {
+                                energy = 11 * absEnergy - 5;
+                            } else {
+                                if (absEnergy <= 15) {
+                                    energy = 3.2 * absEnergy + 73;
+                                } else {
+                                    energy = 3.2 * absEnergy + 50;
+                                }
                             }
                         }
                     }
+                    }catch(NumberFormatException ex){
+                        ex.printStackTrace();
 
-                }catch (NumberFormatException ex){
-                    ex.printStackTrace();
 
                 }
 
@@ -205,10 +236,8 @@ public class ThirdActivity extends AppCompatActivity {
                 textTemp_api.setText(temp_now+"ºC");
                 textHum_api.setText(hum_now+"%");
                 textCloud_api.setText(cloud_now+"%");
-                //from mqtt
-                textTemp_mqtt.setText("27ºC");
-                textHum_mqtt.setText("50%");
-                textCloud_mqtt.setText("10%");
+
+
                 //formulas
                 NumberFormat formatter = new DecimalFormat("0.00");
                 textEnergy.setText(formatter.format(energy)+" W/m2");

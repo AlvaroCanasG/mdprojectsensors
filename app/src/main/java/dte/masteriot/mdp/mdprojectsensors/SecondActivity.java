@@ -2,6 +2,7 @@ package dte.masteriot.mdp.mdprojectsensors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -64,8 +65,10 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     String lightMeasurement = "0.0";
     String temperatureMeasurement = "0.0";
     String humidityMeasurement = "0.0";
+    String firstRoot;
     MQTTClient myMQTT;
-    
+    ArrayList<String> MyList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -84,7 +87,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                 if(!(humiditySensorIsActive | temperatureSensorIsActive | lightSensorIsActive)){
                                     myMQTT.SendNotification("No sensor ON");
                                 } else {
-                                        myMQTT.publishTopic = myMQTT.publishTopic + "/Date";
+                                        myMQTT.publishTopic = firstRoot + "/Date";
                                         calendar = Calendar.getInstance();
                                         String date = dateFormat.format(calendar.getTime());
                                         try {
@@ -94,7 +97,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                         }
 
                                         if (lightSensorIsActive) {
-                                                myMQTT.publishTopic = myMQTT.publishTopic + "/Light";
+                                                myMQTT.publishTopic = firstRoot + "/Light";
                                                 try {
                                                     myMQTT.publishMessage(lightMeasurement);
                                                 } catch (MqttException e) {
@@ -102,7 +105,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                                 }
                                             }
                                         if (temperatureSensorIsActive) {
-                                                myMQTT.publishTopic = myMQTT.publishTopic + "/Temperature";
+                                                myMQTT.publishTopic = firstRoot + "/Temperature";
                                                 try {
                                                     myMQTT.publishMessage(temperatureMeasurement);
                                                 } catch (MqttException e) {
@@ -110,7 +113,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                                                 }
                                         }
                                         if (humiditySensorIsActive) {
-                                            myMQTT.publishTopic = myMQTT.publishTopic + "/Humidity";
+                                            myMQTT.publishTopic = firstRoot + "/Humidity";
                                             try {
                                                 myMQTT.publishMessage(humidityMeasurement);
                                             } catch (MqttException e) {
@@ -156,7 +159,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         mqttConnectOptions.setCleanSession(false);
 
         //Last Will message
-        mqttConnectOptions.setWill(myMQTT.publishTopic,myMQTT.LWillmessage.getBytes(),1,false);
+        mqttConnectOptions.setWill(myMQTT.publishTopic,myMQTT.LWillmessage.getBytes(),0,false);
 
         //SendNotification("Connecting to " + serverUri);
         try {
@@ -205,10 +208,14 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
             Title.add(listofitems.get(i).getTitle());
         }
-        //List<Item> listofitems = new ArrayList<>()
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item , Title);
 
+        //[ACG]
         //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
+        Intent intent = getIntent();
+        //Get the updated list of Greenhouses
+        //MyList = intent.getStringArrayListExtra("Names");
+        //ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item ,MyList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -340,28 +347,28 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         GreenhouseSelected = true;
         switch (i) {
             case 0:
-                myMQTT.publishTopic = "Tomato";
+                firstRoot = "Tomato";
                 break;
             case 1:
-                myMQTT.publishTopic = "Pepper";
+                firstRoot = "Pepper";
                 break;
             case 2:
-                myMQTT.publishTopic = "Eggplant";
+                firstRoot = "Eggplant";
                 break;
             case 3:
-                myMQTT.publishTopic = "GreenBean";
+                firstRoot = "GreenBean";
                 break;
             case 4:
-                myMQTT.publishTopic = "Zucchini";
+                firstRoot = "Zucchini";
                 break;
             case 5:
-                myMQTT.publishTopic = "Cucumber";
+                firstRoot = "Cucumber";
                 break;
             case 6:
-                myMQTT.publishTopic = "Melon";
+                firstRoot = "Melon";
                 break;
             case 7:
-                myMQTT.publishTopic = "Watermelon";
+                firstRoot = "Watermelon";
                 break;
         }
     }
