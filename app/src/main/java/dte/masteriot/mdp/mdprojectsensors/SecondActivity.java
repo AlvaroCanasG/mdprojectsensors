@@ -1,5 +1,7 @@
 package dte.masteriot.mdp.mdprojectsensors;
 
+import static java.lang.Math.sqrt;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -41,9 +44,10 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     SimpleDateFormat dateFormat2 = new SimpleDateFormat("M");
     SimpleDateFormat dateFormat3 = new SimpleDateFormat("s");
     
-    Button bLight;
-    Button bTemp;
-    Button bHumidity;
+    SwitchCompat bLight;
+    SwitchCompat bTemp;
+    SwitchCompat bHumidity;
+    Button bPublish;
     
 
     TextView tvSensorValue;
@@ -55,12 +59,15 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private Sensor accelerometer;
-
+    private  float currentAcceleration;
+    private float lastAcceleration;
+    private float acceleration;
 
     boolean humiditySensorIsActive;
     boolean temperatureSensorIsActive;
     boolean lightSensorIsActive;
     boolean GreenhouseSelected;
+    boolean noTouchPublish = false;
 
     String lightMeasurement = "0.0";
     String temperatureMeasurement = "0.0";
@@ -68,7 +75,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     String firstRoot;
     MQTTClient myMQTT;
     ArrayList<String> MyList;
-    float x,y,z, last_x,last_y,last_z;
+    //float x,y,z, last_x,last_y,last_z;
     long lastUpdate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +83,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         myMQTT = new MQTTClient(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        Button bPublish = findViewById(R.id.bPublish);
+        bPublish = findViewById(R.id.bPublish);
         bPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +133,8 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                 }
         });
 
-        myMQTT.clientId = "id";
+        Random random = new Random();
+        myMQTT.clientId = myMQTT.clientId + random.nextInt(100000);
         myMQTT.mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), myMQTT.serverUri, myMQTT.clientId);
         myMQTT.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
@@ -226,8 +234,9 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(SecondActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        currentAcceleration = SensorManager.GRAVITY_EARTH;
+        lastAcceleration = SensorManager.GRAVITY_EARTH;
 
-        
 
         // Listener for the button:
         bLight.setOnClickListener(new View.OnClickListener() {
@@ -284,14 +293,17 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(SecondActivity.this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
-
-
-// to store the values of the variables that keep the status of each sensor
+    // to store the values of the variables that keep the status of each sensor
     @Override
     protected void onStop(){
         super.onStop();
-
+        sensorManager.unregisterListener(SecondActivity.this, accelerometer);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean("lightSensorIsActive", lightSensorIsActive);
@@ -300,8 +312,11 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         editor.apply();
     }
 
-    
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(SecondActivity.this, accelerometer);
+    }
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -309,10 +324,46 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
             lightMeasurement = String.format("%.01f", sensorEvent.values[0]);
             tvSensorValue.setText(lightMeasurement);
+            if(noTouchPublish){
+                bPublish.callOnClick();
+                noTouchPublish = false;
+            }
         } else {
             long curTime = System.currentTimeMillis();
+            if(curTime - lastUpdate > 300) {
+                lastUpdate = curTime;
+                float x = sensorEvent.values[0];
+                float y = sensorEvent.values[1];
+                float z = sensorEvent.values[2];
+                lastAcceleration = currentAcceleration;
+                currentAcceleration = (float) sqrt((x * x + y * y + z * z));
+                float delta = currentAcceleration - lastAcceleration;
+                acceleration = acceleration * (float) 0.9 + delta;
+                if (acceleration > 12) {
+                    bHumidity.callOnClick();
+                    bLight.callOnClick();
+                    bTemp.callOnClick();
+                    if (temperatureSensorIsActive) {
+                        bTemp.setChecked(true);
+                    } else {
+                        bTemp.setChecked(false);
+                    }
+                    if (humiditySensorIsActive) {
+                        bHumidity.setChecked(true);
+                    } else {
+                        bHumidity.setChecked(false);
+                    }
+                    if (lightSensorIsActive) {
+                        bLight.setChecked(true);
+                    } else {
+                        bLight.setChecked(false);
+                    }
+                    noTouchPublish = true;
+                }
+            }
+            /*long curTime = System.currentTimeMillis();
             // only allow one update every 100ms.
-            if ((curTime - lastUpdate) > 100) {
+            if ((curTime - lastUpdate) > 500) {
                 long diffTime = (curTime - lastUpdate);
                     lastUpdate = curTime;
                     x = sensorEvent.values[0];
@@ -320,16 +371,31 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                     z = sensorEvent.values[2];
                     float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
 
-            if (speed > 800) {
+            if (speed > 500) {
                 bHumidity.callOnClick();
                 bLight.callOnClick();
                 bTemp.callOnClick();
-
+                if(temperatureSensorIsActive){
+                    bTemp.setChecked(true);
+                } else {
+                    bTemp.setChecked(false);
+                }
+                if(humiditySensorIsActive){
+                    bHumidity.setChecked(true);
+                } else {
+                    bHumidity.setChecked(false);
+                }
+                if(lightSensorIsActive){
+                    bLight.setChecked(true);
+                } else {
+                    bLight.setChecked(false);
+                }
+                bPublish.callOnClick();
             }
             last_x = x;
             last_y = y;
             last_z = z;
-        }
+        }*/
 
         }
     }

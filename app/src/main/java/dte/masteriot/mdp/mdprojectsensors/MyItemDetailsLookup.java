@@ -31,7 +31,7 @@ final class MyItemDetailsLookup extends ItemDetailsLookup<Long> {
     @Nullable
     @Override
     public ItemDetails<Long> getItemDetails(@NonNull MotionEvent e) {
-        Log.d(TAG, "getItemDetails() called for a given MotionEvent -> calling getItemDetails() of the corresponding ViewHolder");
+        //Log.d(TAG, "getItemDetails() called for a given MotionEvent -> calling getItemDetails() of the corresponding ViewHolder");
         View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
         if (view != null) {
             RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(view);

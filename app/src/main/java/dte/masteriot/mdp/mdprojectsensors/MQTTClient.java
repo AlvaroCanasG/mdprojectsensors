@@ -35,7 +35,7 @@ public class MQTTClient extends AppCompatActivity {
     final String serverUri = "tcp://172.20.10.3:1883";
     String publishTopic = "topic";
     MqttAndroidClient mqttAndroidClient;
-    String clientId = "ExampleAndroidClient";
+    String clientId = "Client_";
     Calendar calendar;
     String subscriptionTopic = "topic";
     @SuppressLint("SimpleDateFormat")

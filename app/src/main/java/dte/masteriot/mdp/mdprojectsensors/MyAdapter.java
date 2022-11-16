@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojectsensors.MyViewHolder> {
@@ -57,7 +56,7 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
         Log.d(TAG, "onBindViewHolder() called for element in position " + position +
                 ", Selected? = " + selectionTracker.isSelected(holder.getItemDetails().getSelectionKey()));
 
-        holder.bindValues(item, selectionTracker.isSelected(holder.getItemDetails().getSelectionKey()), status );
+        holder.bindValues(item, selectionTracker.isSelected(holder.getItemDetails().getSelectionKey()), status);
 
 
     }

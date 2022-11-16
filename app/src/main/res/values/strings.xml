@@ -1,28 +1,6 @@
 <resources>
     <string name="app_name">Greenhouse APP</string>
-    <string name="light_sensor_off">Light\nOFF</string>
-    <string name="light_sensor_on">Light\nON</string>
-    <string name="accelerometer_sensor_off">Accel.\nOFF</string>
-    <string name="accelerometer_sensor_on">Accel.\nON</string>
-    <string name="steps_counter_off">Steps Count\nOFF</string>
-    <string name="steps_counter_on">Steps Count\nON</string>
 
-    <string name="A_light">GreenHouseA/Light</string>
-    <string name="A_Temperature">GreenHouseA/Temperature</string>
-    <string name="A_Humidity">GreenHouseA/Humidity</string>
-
-
-    <string name="B_light">GreenHouseB/Light</string>
-    <string name="B_Temperature">GreenHouseB/Temperature</string>
-    <string name="B_Humidity">GreenHouseB/Humidity</string>
-
-    <string name="C_light">GreenHouseC/Light</string>
-    <string name="C_Temperature">GreenHouseC/Temperature</string>
-    <string name="C_Humidity">GreenHouseC/Humidity</string>
-
-    <string name="D_light">GreenHouseD/Light</string>
-    <string name="D_Temperature">GreenHouseD/Temperature</string>
-    <string name="D_Humidity">GreenHouseD/Humidity</string>
     <string-array name="Greenhouses_array">
         <item>Tomato</item>
         <item>Pepper</item>

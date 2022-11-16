@@ -7,11 +7,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +23,6 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +47,7 @@ public class ThirdActivity extends AppCompatActivity {
     private Integer hour_index;
     private Integer optimalVal;
     private double energy, desv;
+    private ImageButton infoEnergy, infoDeviation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,8 @@ public class ThirdActivity extends AppCompatActivity {
         textName = findViewById(R.id.name_gh);
         textEnergy = findViewById(R.id.text_energy);
         textDesv = findViewById(R.id.text_desv);
+        infoEnergy = findViewById(R.id.infoButton);
+        infoDeviation = findViewById(R.id.infoButton2);
 
         // Get measures and time from subscriber
         Intent inputIntent = getIntent();
@@ -71,8 +77,11 @@ public class ThirdActivity extends AppCompatActivity {
         Temperature = inputIntent.getStringExtra("Temperature");
         Date = inputIntent.getStringExtra("Date");
         Name = inputIntent.getStringExtra("Name");
-
-        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD "+Date);
+        if(Date!= null) {
+            textName.setText(Name.toUpperCase(Locale.ROOT) + " RECORD " + Date);
+        } else {
+            textName.setText(Name.toUpperCase(Locale.ROOT) + " RECORD - - -");
+        }
 
         //from mqtt
         if(Temperature != null){
@@ -92,7 +101,7 @@ public class ThirdActivity extends AppCompatActivity {
         } else {
             textCloud_mqtt.setText("No data");
         }
-        if(Date.length()==3){
+        if(Date == null){
             textTemp_api.setText("No data");
             textHum_api.setText("No data");
             textCloud_api.setText("No data");
@@ -251,4 +260,21 @@ public class ThirdActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void showInfo(View view){
+        String infoText = "";
+        switch(view.getId()){
+            case R.id.infoButton:
+                infoText = "The ENERGY field represents the instant power consumption by the greenhouse in order to maintain the current temperature in the room";
+                break;
+            case R.id.infoButton2:
+                infoText = "The DEVIATION field represents how much the current room temperature differs from the best grow room temperature according to the growing vegetable";
+        }
+        Snackbar snackbar = Snackbar.make(this.findViewById(R.id.text_desv),infoText,3000);
+        View snackbarView = snackbar.getView();
+        TextView snackTextView = (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        snackTextView.setMaxLines(4);
+        snackbar.show();
+
+    }
 }

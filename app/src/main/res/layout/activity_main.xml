@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/seeselectionbutton2"
+        android:id="@+id/bNewMeasurement"
         android:layout_width="269dp"
         android:layout_height="57dp"
         android:layout_marginStart="50dp"
@@ -30,7 +30,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="39dp"
-        app:layout_constraintBottom_toTopOf="@+id/seeselectionbutton2"
+        app:layout_constraintBottom_toTopOf="@+id/bNewMeasurement"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
