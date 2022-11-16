@@ -71,8 +71,8 @@ public class ThirdActivity extends AppCompatActivity {
         Temperature = inputIntent.getStringExtra("Temperature");
         Date = inputIntent.getStringExtra("Date");
         Name = inputIntent.getStringExtra("Name");
-        String []part=Date.split(" ");
-        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD "+part[0]);
+
+        textName.setText(Name.toUpperCase(Locale.ROOT)+" RECORD "+Date);
 
         //from mqtt
         if(Temperature != null){
@@ -92,71 +92,74 @@ public class ThirdActivity extends AppCompatActivity {
         } else {
             textCloud_mqtt.setText("No data");
         }
-
-/*
-        if (part.length > 0){
+        if(Date.length()==3){
+            textTemp_api.setText("No data");
+            textHum_api.setText("No data");
+            textCloud_api.setText("No data");
+            textEnergy.setText("No data");
+            textDesv.setText("No data");
+        }else{
+            switch (Name){
+                case "Tomato":
+                    lat= getString(R.string.tomato_lat);
+                    lon = getString(R.string.tomato_long);
+                    optimalVal = getResources().getInteger(R.integer.Tomato);
+                    break;
+                case "Pepper":
+                    lat= getString(R.string.pepper_lat);
+                    lon = getString(R.string.pepper_long);
+                    optimalVal = getResources().getInteger(R.integer.Pepper);
+                    break;
+                case "Eggplant":
+                    lat= getString(R.string.egg_lat);
+                    lon = getString(R.string.egg_long);
+                    optimalVal = getResources().getInteger(R.integer.Eggplant);
+                    break;
+                case "Watermelon":
+                    lat= getString(R.string.wat_lat);
+                    lon = getString(R.string.wat_long);
+                    optimalVal = getResources().getInteger(R.integer.Watermelon);
+                    break;
+                case "Zucchini":
+                    lat= getString(R.string.zuc_lat);
+                    lon = getString(R.string.zuc_long);
+                    optimalVal = getResources().getInteger(R.integer.Zucchini);
+                    break;
+                case "Cucumber":
+                    lat= getString(R.string.cuc_lat);
+                    lon = getString(R.string.cuc_long);
+                    optimalVal = getResources().getInteger(R.integer.Cucumber);
+                    break;
+                case "Melon":
+                    lat= getString(R.string.melon_lat);
+                    lon = getString(R.string.melon_long);
+                    optimalVal = getResources().getInteger(R.integer.Melon);
+                    break;
+                default:
+                    lat= getString(R.string.bean_lat);
+                    lon = getString(R.string.bean_long);
+                    optimalVal = getResources().getInteger(R.integer.Green_bean);
+                    break;
+            }
+            String []part=Date.split(" ");
             String [] full_time = part[1].split(":");
             try{
-            //for getting all measures in correct index
-            hour_index = Integer.parseInt(full_time[0]);
+                //for getting all measures in correct index
+                hour_index = Integer.parseInt(full_time[0]);
             }
             catch (NumberFormatException ex){
                 ex.printStackTrace();
             }
             String date_2_api=part[0];
             String full_URL = URL_API1+LAT+lat+LONG+lon+PAR+D_START+date_2_api+D_END+date_2_api;
-        }*/
-
-        switch (Name){
-            case "Tomato":
-                lat= getString(R.string.tomato_lat);
-                lon = getString(R.string.tomato_long);
-                optimalVal = getResources().getInteger(R.integer.Tomato);
-                break;
-            case "Pepper":
-                lat= getString(R.string.pepper_lat);
-                lon = getString(R.string.pepper_long);
-                optimalVal = getResources().getInteger(R.integer.Pepper);
-                break;
-            case "Eggplant":
-                lat= getString(R.string.egg_lat);
-                lon = getString(R.string.egg_long);
-                optimalVal = getResources().getInteger(R.integer.Eggplant);
-                break;
-            case "Watermelon":
-                lat= getString(R.string.wat_lat);
-                lon = getString(R.string.wat_long);
-                optimalVal = getResources().getInteger(R.integer.Watermelon);
-                break;
-            case "Zucchini":
-                lat= getString(R.string.zuc_lat);
-                lon = getString(R.string.zuc_long);
-                optimalVal = getResources().getInteger(R.integer.Zucchini);
-                break;
-            case "Cucumber":
-                lat= getString(R.string.cuc_lat);
-                lon = getString(R.string.cuc_long);
-                optimalVal = getResources().getInteger(R.integer.Cucumber);
-                break;
-            case "Melon":
-                lat= getString(R.string.melon_lat);
-                lon = getString(R.string.melon_long);
-                optimalVal = getResources().getInteger(R.integer.Melon);
-                break;
-            default:
-                lat= getString(R.string.bean_lat);
-                lon = getString(R.string.bean_long);
-                optimalVal = getResources().getInteger(R.integer.Green_bean);
-                break;
+            // Create an executor for the background tasks:
+            es = Executors.newSingleThreadExecutor();
+            LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, full_URL);
+            es.execute(loadURLContents);
         }
-        String full_URL = URL_API1+LAT+lat+LONG+lon+PAR+D_START+"2022-11-01"+D_END+"2022-11-01";
-        // Create an executor for the background tasks:
-        es = Executors.newSingleThreadExecutor();
-        LoadURLContents loadURLContents = new LoadURLContents(handler, CONTENT_TYPE_JSON, full_URL);
-        es.execute(loadURLContents);
     }
 
-    @Override
+ /*   @Override
     protected void onResume() {
         super.onResume();
         Intent inputIntent = getIntent();
@@ -166,7 +169,7 @@ public class ThirdActivity extends AppCompatActivity {
         Date = inputIntent.getStringExtra("Date");
         Name = inputIntent.getStringExtra("Name");
 
-    }
+    }*/
 
 
     // Define the handler that will receive the messages from the background thread:
@@ -197,13 +200,13 @@ public class ThirdActivity extends AppCompatActivity {
                         humArray.add(humidity.getString(r));
                         cloudArray.add(cloudcover.getString(r));
                     }
-                    LocalDateTime now = java.time.LocalDateTime.now();
-                    Integer hour = now.toLocalTime().getHour();
+                    //LocalDateTime now = java.time.LocalDateTime.now();
+                    //Integer hour = now.toLocalTime().getHour();
 
-                    time_now  = timeArray.get(hour);
-                    temp_now  = tempArray.get(hour);
-                    hum_now   = humArray.get(hour);
-                    cloud_now = cloudArray.get(hour);
+                    time_now  = timeArray.get(hour_index);
+                    temp_now  = tempArray.get(hour_index);
+                    hum_now   = humArray.get(hour_index);
+                    cloud_now = cloudArray.get(hour_index);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
