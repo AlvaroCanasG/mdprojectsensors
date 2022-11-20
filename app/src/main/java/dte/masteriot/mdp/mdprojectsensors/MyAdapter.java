@@ -1,6 +1,5 @@
 package dte.masteriot.mdp.mdprojectsensors;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +20,7 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
     private List<Item> items; // reference to the dataset
     private SelectionTracker selectionTracker; // set through method setSelectionTracker()
     Context context;
-    Activity activity;
+
 
     public MyAdapter(Context ctxt, List<Item> listofitems) {
         super();
@@ -30,7 +29,6 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
 
     }
 
-
     // ------ Implementation of methods of RecyclerView.Adapter ------ //
 
     @Override
@@ -38,10 +36,6 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
         // this method has to actually inflate the item view and return the view holder.
         // it does not give values to the elements of the view holder.
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
-        //Initialize View Model
-        //mainViewModel = ViewModelProviders.of((FragmentActivity)activity).get(MainViewModel.class)
-
-
 
         return new MyViewHolder(context, v, this);
     }

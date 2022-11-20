@@ -376,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //pop up message to confirmation
     private void confirmation() {
         Iterator iteratorSelectedItemsKeys = tracker.getSelection().iterator();
 
@@ -420,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+    //Sort by menu
     public static Comparator<Item> GreenhouseAZ = new Comparator<Item>() {
         @Override
         public int compare(Item t1, Item t2) {

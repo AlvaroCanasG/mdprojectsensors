@@ -101,12 +101,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
                 Log.d(TAG, "ItemDetailsLookup.ItemDetails<Long>.getSelectionKey() called, will return " + adapter.getKeyAtPosition(getAbsoluteAdapterPosition()));
                 return (adapter.getKeyAtPosition(getAbsoluteAdapterPosition()));
             }
-            //[MGM] take the value of the status
-            /*
-            public boolean getStatusItem(){
-                return (adapter.getStatusAtPosition(getAbsoluteAdapterPosition()));
-            }
-             */
+
         };
 
         return itemDetails;
