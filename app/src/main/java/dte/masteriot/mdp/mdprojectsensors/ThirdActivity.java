@@ -32,7 +32,6 @@ import java.util.concurrent.Executors;
 public class ThirdActivity extends AppCompatActivity {
     public static final String LOGSLOADWEBCONTENT = "LOGSLOADWEBCONTENT"; // to easily filter logs
     private String logTag; // to clearly identify logs
-    private static final String URL_API = "https://api.open-meteo.com/v1/forecast?latitude=51.5002&longitude=-0.1262&hourly=temperature_2m,relativehumidity_2m,cloudcover&timezone=Europe%2FLondon&start_date=2022-11-01&end_date=2022-11-01";
     private static final String URL_API1 ="https://api.open-meteo.com/v1/forecast?";
     private static final String LAT ="latitude=";
     private static final String LONG="&longitude=";
@@ -77,6 +76,8 @@ public class ThirdActivity extends AppCompatActivity {
         Temperature = inputIntent.getStringExtra("Temperature");
         Date = inputIntent.getStringExtra("Date");
         Name = inputIntent.getStringExtra("Name");
+
+        //if there is no measure it will no do the api request-> all data with no value
         if(Date!= null) {
             textName.setText(Name.toUpperCase(Locale.ROOT) + " RECORD " + Date);
         } else {
@@ -108,6 +109,7 @@ public class ThirdActivity extends AppCompatActivity {
             textEnergy.setText("No data");
             textDesv.setText("No data");
         }else{
+            //taking latitude, longitude and optimal temp value for each greenhouse
             switch (Name){
                 case "Tomato":
                     lat= getString(R.string.tomato_lat);
@@ -168,19 +170,6 @@ public class ThirdActivity extends AppCompatActivity {
         }
     }
 
- /*   @Override
-    protected void onResume() {
-        super.onResume();
-        Intent inputIntent = getIntent();
-        Light = inputIntent.getStringExtra("Light");
-        Humidity = inputIntent.getStringExtra("Humidity");
-        Temperature = inputIntent.getStringExtra("Temperature");
-        Date = inputIntent.getStringExtra("Date");
-        Name = inputIntent.getStringExtra("Name");
-
-    }*/
-
-
     // Define the handler that will receive the messages from the background thread:
     Handler handler = new Handler(Looper.getMainLooper()) {
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -209,8 +198,6 @@ public class ThirdActivity extends AppCompatActivity {
                         humArray.add(humidity.getString(r));
                         cloudArray.add(cloudcover.getString(r));
                     }
-                    //LocalDateTime now = java.time.LocalDateTime.now();
-                    //Integer hour = now.toLocalTime().getHour();
 
                     time_now  = timeArray.get(hour_index);
                     temp_now  = tempArray.get(hour_index);
