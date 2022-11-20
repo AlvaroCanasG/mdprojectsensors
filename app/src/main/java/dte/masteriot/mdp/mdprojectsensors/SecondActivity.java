@@ -4,8 +4,6 @@ import static java.lang.Math.sqrt;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -74,9 +72,9 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     String humidityMeasurement = "0.0";
     String firstRoot;
     MQTTClient myMQTT;
-    ArrayList<String> MyList;
-    //float x,y,z, last_x,last_y,last_z;
     long lastUpdate;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -92,10 +90,10 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                 } else if (!GreenhouseSelected) {
                             myMQTT.SendNotification("Please select a Greenhouse");
                         } else {
-                                if(!(humiditySensorIsActive | temperatureSensorIsActive | lightSensorIsActive)){
+                                if(!(humiditySensorIsActive | temperatureSensorIsActive | lightSensorIsActive)){ //No sensor active = Nothing to publish!
                                     myMQTT.SendNotification("No sensor ON");
                                 } else {
-                                        myMQTT.publishTopic = firstRoot + "/Date";
+                                        myMQTT.publishTopic = firstRoot + "/Date"; // If there is at least 1 sensor active, the date will be published as a separated message
                                         calendar = Calendar.getInstance();
                                         String date = dateFormat.format(calendar.getTime());
                                         try {
@@ -134,7 +132,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         });
 
         Random random = new Random();
-        myMQTT.clientId = myMQTT.clientId + random.nextInt(100000);
+        myMQTT.clientId = myMQTT.clientId + random.nextInt(100000);// Random id to be able to have multiple clients connected
         myMQTT.mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), myMQTT.serverUri, myMQTT.clientId);
         myMQTT.mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
@@ -170,7 +168,6 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         //Last Will message
         mqttConnectOptions.setWill(myMQTT.publishTopic,myMQTT.LWillmessage.getBytes(),0,false);
 
-        //SendNotification("Connecting to " + serverUri);
         try {
             myMQTT.mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
@@ -201,16 +198,13 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
         // Get the references to the UI:
         bLight = findViewById(R.id.bLight); // button to start/stop sensor's readings
         tvSensorValue = findViewById(R.id.lightMeasurement); // sensor's values
-
         bTemp = findViewById(R.id.bTemp);
         tvTempValue = findViewById(R.id.tempMeasurement);
-
-
         bHumidity = findViewById(R.id.bHum);
         tvHumidityValue = findViewById(R.id.humMeasurement);
 
+        //Spinner (Dropdown menu)
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        //MGM
         List<Item> listofitems = ((MyApplication) this.getApplication()).getListofitems();
         ArrayList<String> Title = new ArrayList<>();
         for (int i = 0; i<listofitems.size(); i++){
@@ -218,13 +212,6 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
             Title.add(listofitems.get(i).getTitle());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item , Title);
-
-        //[ACG]
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Greenhouses_array, android.R.layout.simple_spinner_item);
-        Intent intent = getIntent();
-        //Get the updated list of Greenhouses
-        //MyList = intent.getStringArrayListExtra("Names");
-        //ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item ,MyList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
@@ -255,7 +242,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                 }
             }
         });
-        // Listener for the button2:
+        // Listener for the bTemp:
         bTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -264,14 +251,14 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                     temperatureSensorIsActive = false;
                 } else {
                     // register listener and make the appropriate changes in the UI
-                    TemperatureEmulator();
+                    TemperatureEmulator();// Call the Temperature Emulator
                     tvTempValue.setText(temperatureMeasurement+"ºC");
                     temperatureSensorIsActive = true;
                 }
             }
         });
 
-        // Listener for the button3:
+        // Listener for the bHumidity:
         bHumidity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -281,7 +268,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                     humiditySensorIsActive = false;
                 } else {
                     // register listener and make the appropriate changes in the UI:
-                    HumidityEmulator();
+                    HumidityEmulator();//Call the Humidity emulator
                     tvHumidityValue.setText(humidityMeasurement+"%");
                     humiditySensorIsActive = true;
                 }
@@ -294,22 +281,15 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() {//register listener of the Accelerometer
         super.onResume();
         sensorManager.registerListener(SecondActivity.this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    // to store the values of the variables that keep the status of each sensor
     @Override
-    protected void onStop(){
+    protected void onStop(){// unregister listener for the Accelerometer
         super.onStop();
         sensorManager.unregisterListener(SecondActivity.this, accelerometer);
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean("lightSensorIsActive", lightSensorIsActive);
-        editor.putBoolean("temperatureSensorIsActive", temperatureSensorIsActive);
-        editor.putBoolean("stepSensorIsActive", humiditySensorIsActive);
-        editor.apply();
     }
 
     @Override
@@ -321,16 +301,17 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
     @SuppressLint("DefaultLocale")
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
+        if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) { //if Light Sensor
             lightMeasurement = String.format("%.01f", sensorEvent.values[0]);
             tvSensorValue.setText(lightMeasurement);
-            if(noTouchPublish){
+            if(noTouchPublish){ //When noTouchPublish flag is activated, we call to the publish button after we register the first value of the Light sensor
                 bPublish.callOnClick();
-                noTouchPublish = false;
+                noTouchPublish = false;//Deactivate the flag
             }
-        } else {
+        } else { // Accelerometer
+            //This part of the code is in charge of detecting a shake in the device
             long curTime = System.currentTimeMillis();
-            if(curTime - lastUpdate > 300) {
+            if(curTime - lastUpdate > 300) {// Only check for a new shake each 300 ms
                 lastUpdate = curTime;
                 float x = sensorEvent.values[0];
                 float y = sensorEvent.values[1];
@@ -339,69 +320,33 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
                 currentAcceleration = (float) sqrt((x * x + y * y + z * z));
                 float delta = currentAcceleration - lastAcceleration;
                 acceleration = acceleration * (float) 0.9 + delta;
-                if (acceleration > 12) {
+                if (acceleration > 12) {//A shake detected. It is neccesary to call the OnClik functions from the code
                     bHumidity.callOnClick();
                     bLight.callOnClick();
                     bTemp.callOnClick();
                     if (temperatureSensorIsActive) {
-                        bTemp.setChecked(true);
+                        bTemp.setChecked(true);//Check the SwicthCompat objects
                     } else {
                         bTemp.setChecked(false);
                     }
                     if (humiditySensorIsActive) {
-                        bHumidity.setChecked(true);
+                        bHumidity.setChecked(true);//Check the SwicthCompat objects
                     } else {
                         bHumidity.setChecked(false);
                     }
                     if (lightSensorIsActive) {
-                        bLight.setChecked(true);
+                        bLight.setChecked(true);//Check the SwicthCompat objects
                     } else {
                         bLight.setChecked(false);
                     }
                     noTouchPublish = true;
                 }
             }
-            /*long curTime = System.currentTimeMillis();
-            // only allow one update every 100ms.
-            if ((curTime - lastUpdate) > 500) {
-                long diffTime = (curTime - lastUpdate);
-                    lastUpdate = curTime;
-                    x = sensorEvent.values[0];
-                    y = sensorEvent.values[1];
-                    z = sensorEvent.values[2];
-                    float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
-
-            if (speed > 500) {
-                bHumidity.callOnClick();
-                bLight.callOnClick();
-                bTemp.callOnClick();
-                if(temperatureSensorIsActive){
-                    bTemp.setChecked(true);
-                } else {
-                    bTemp.setChecked(false);
-                }
-                if(humiditySensorIsActive){
-                    bHumidity.setChecked(true);
-                } else {
-                    bHumidity.setChecked(false);
-                }
-                if(lightSensorIsActive){
-                    bLight.setChecked(true);
-                } else {
-                    bLight.setChecked(false);
-                }
-                bPublish.callOnClick();
-            }
-            last_x = x;
-            last_y = y;
-            last_z = z;
-        }*/
-
         }
     }
 
     
-    public void TemperatureEmulator(){ //Emulates the temperature depending on the Hour and Month
+    public void TemperatureEmulator(){ //Emulates the temperature taking the current Hour and Month as parameters
         calendar = Calendar.getInstance();
         float month = Float.parseFloat(dateFormat2.format(calendar.getTime()));
         float aux = (float)(new Random().nextInt(11) - 1)/10;
@@ -436,7 +381,7 @@ public class SecondActivity extends AppCompatActivity implements SensorEventList
 
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) { //Set the first part of the topic
         GreenhouseSelected = true;
         switch (i) {
             case 0:

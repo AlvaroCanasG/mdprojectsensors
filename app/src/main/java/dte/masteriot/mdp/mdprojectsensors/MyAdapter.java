@@ -91,11 +91,7 @@ public class MyAdapter extends RecyclerView.Adapter<dte.masteriot.mdp.mdprojects
     public void setSelectionTracker(SelectionTracker selectionTracker) {
         this.selectionTracker = selectionTracker;
     }
-/*
-    public boolean getStatusAtPosition(int pos) {
-        return (items.get(pos).getStatus());
-    } //[MGM]
-*/
+
     public void removeItem(Long removekey){
         for(int i= 0 ; i<items.size(); ++i){
             if(items.get(i).getKey() == removekey){

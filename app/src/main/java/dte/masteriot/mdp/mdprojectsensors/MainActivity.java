@@ -35,7 +35,6 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -123,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         //Last Will message
         mqttConnectOptions.setWill(Greenhouse.publishTopic,Greenhouse.LWillmessage.getBytes(),0,false);
 
-        try {
+        try { //Create and connect the MQTT client. Also, create the subscriptions.
             Greenhouse.mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                     Greenhouse.subscribeToTopic();
                     Greenhouse.subscriptionTopic = "Watermelon/#";
                     Greenhouse.subscribeToTopic();
-                    Snackbar.make(findViewById(R.id.bNewMeasurement), "Client connected and subscribed", 2000).show();
+                    Snackbar.make(findViewById(R.id.bNewMeasurement), "Client connected and subscribed", 2000).show();// Inform the user
                 }
 
                 @Override
@@ -178,12 +177,12 @@ public class MainActivity extends AppCompatActivity {
             TomatoTemperature = inputMessage.getData().getString("Tomato/Temperature");
             TomatoHumidity = inputMessage.getData().getString("Tomato/Humidity");
             TomatoDate = inputMessage.getData().getString("Tomato/Date");
-            recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature, TomatoDate);
+            recyclerViewAdapter.getItemWithKey(0).setParameters(TomatoLight,TomatoHumidity, TomatoTemperature,TomatoDate);
             if(TomatoTemperature != null) {
-                if (Float.parseFloat(TomatoTemperature) > (float)30.0) {
+                if (Float.parseFloat(TomatoTemperature) > (float)27.0) {//Max temperature for tomato
                     recyclerViewAdapter.getItemWithKey(0).setStatus(false);
                     recyclerViewAdapter.notifyDataSetChanged();
-                } else if (Float.parseFloat((TomatoTemperature)) < (float)10.0) {
+                } else if (Float.parseFloat((TomatoTemperature)) < (float)18.0) {//Min temperature for tomato
                     recyclerViewAdapter.getItemWithKey(0).setStatus(false);
                     recyclerViewAdapter.notifyDataSetChanged();
                 } else {
@@ -201,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     if (Float.parseFloat(PepperTemperature) > 30.0) {
                         recyclerViewAdapter.getItemWithKey(1).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((PepperTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((PepperTemperature)) < (float)22.0) {
                         recyclerViewAdapter.getItemWithKey(1).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -219,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     if (Float.parseFloat(EggplantTemperature) > 30.0) {
                         recyclerViewAdapter.getItemWithKey(2).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((EggplantTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((EggplantTemperature)) < (float)23.0) {
                         recyclerViewAdapter.getItemWithKey(2).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -238,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                     if (Float.parseFloat(GreenBeanTemperature) > (float)30.0) {
                         recyclerViewAdapter.getItemWithKey(3).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((GreenBeanTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((GreenBeanTemperature)) < (float)16.0) {
                         recyclerViewAdapter.getItemWithKey(3).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -253,10 +252,10 @@ public class MainActivity extends AppCompatActivity {
                 ZucchiniDate = inputMessage.getData().getString("Zucchini/Date");
                 recyclerViewAdapter.getItemWithKey(4).setParameters(ZucchiniLight,ZucchiniHumidity, ZucchiniTemperature, ZucchiniDate);
                 if(ZucchiniTemperature != null) {
-                    if (Float.parseFloat(ZucchiniTemperature) > (float)30.0) {
+                    if (Float.parseFloat(ZucchiniTemperature) > (float)28.0) {
                         recyclerViewAdapter.getItemWithKey(4).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((ZucchiniTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((ZucchiniTemperature)) < (float)22.0) {
                         recyclerViewAdapter.getItemWithKey(4).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -275,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     if (Float.parseFloat(CucumberTemperature) > (float)30.0) {
                         recyclerViewAdapter.getItemWithKey(5).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((CucumberTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((CucumberTemperature)) < (float)24.0) {
                         recyclerViewAdapter.getItemWithKey(5).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -291,10 +290,10 @@ public class MainActivity extends AppCompatActivity {
                 MelonDate = inputMessage.getData().getString("Melon/Date");
                 recyclerViewAdapter.getItemWithKey(6).setParameters(MelonLight,MelonHumidity, MelonTemperature, MelonDate);
                 if(MelonTemperature!= null) {
-                    if (Float.parseFloat(MelonTemperature) > (float)30.0) {
+                    if (Float.parseFloat(MelonTemperature) > (float)28.0) {
                         recyclerViewAdapter.getItemWithKey(6).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((MelonTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((MelonTemperature)) < (float)21.0) {
                         recyclerViewAdapter.getItemWithKey(6).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -310,10 +309,10 @@ public class MainActivity extends AppCompatActivity {
                 WatermelonDate = inputMessage.getData().getString("Watermelon/Date");
                 recyclerViewAdapter.getItemWithKey(7).setParameters(WatermelonLight,WatermelonHumidity, WatermelonTemperature, WatermelonDate);
                 if(WatermelonTemperature != null) {
-                    if (Float.parseFloat(WatermelonTemperature) > (float)30.0) {
+                    if (Float.parseFloat(WatermelonTemperature) > (float)27.0) {
                         recyclerViewAdapter.getItemWithKey(7).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
-                    } else if (Float.parseFloat((WatermelonTemperature)) < (float)10.0) {
+                    } else if (Float.parseFloat((WatermelonTemperature)) < (float)20.0) {
                         recyclerViewAdapter.getItemWithKey(7).setStatus(false);
                         recyclerViewAdapter.notifyDataSetChanged();
                     } else {
@@ -367,55 +366,14 @@ public class MainActivity extends AppCompatActivity {
         tracker.onSaveInstanceState(outState); // Save state about selections.
     }
 
-    // ------ Initialization of the dataset ------ //
-/*
-    private void initListOfItems () {
 
-        listofitems.add(new Item("Tomato", TomatoLight,TomatoHumidity,TomatoTemperature,TomatoDate, "March - April - May" , (long) 0 , R.drawable.tomato, true ));
-        listofitems.add(new Item("Pepper", PepperLight, PepperHumidity, PepperTemperature,PepperDate, "March - April - May" , (long) 1 , R.drawable.peper , false ));
-        listofitems.add(new Item("Eggplant", EggplantLight, EggplantHumidity, EggplantTemperature,EggplantDate, "July - August" , (long) 2 , R.drawable.eggplant , true ));
-        listofitems.add(new Item("Green bean", GreenBeanLight,GreenBeanHumidity, GreenBeanTemperature,GreenBeanDate, "May - Jun" , (long) 3 , R.drawable.green_bean , false ));
-        listofitems.add(new Item("Zucchini", ZucchiniLight, ZucchiniHumidity, ZucchiniTemperature,ZucchiniDate, "May" , (long) 4 , R.drawable.zucchini, true ));
-        listofitems.add(new Item("Cucumber", CucumberLight, CucumberHumidity,CucumberTemperature,CucumberDate,"April" , (long) 5 , R.drawable.cucumber , true ));
-        listofitems.add(new Item("Melon", MelonLight,MelonHumidity, MelonTemperature,MelonDate, "March - April - May" , (long) 6 , R.drawable.melon , true ));
-        listofitems.add(new Item("Watermelon", WatermelonLight,WatermelonHumidity, WatermelonTemperature,WatermelonDate, "February - March - April" , (long) 7 , R.drawable.watermelon , true ));
-
-        listofitemsinitialized = true;
-
-    }
-
- */
-
-    // ------ Buttons' on-click listeners ------ //
-
-    public void listLayout(View view) {
-        // Button to see in a linear fashion has been clicked:
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    public void gridLayout(View view) {
-        // Button to see in a grid fashion has been clicked:
-        //recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-
-        Intent i = new Intent(MainActivity.this, ThirdActivity.class);
-        startActivity(i);
-    }
 
     public void NewMeasurement(View view) {
         // Button "New Measurement" has been clicked:
 
-        // This iterator allows to navigate through the keys of the currently selected items.
-        // Complete info on getSelection():
-        // https://developer.android.com/reference/androidx/recyclerview/selection/SelectionTracker#getSelection()
-        // Complete info on class Selection (getSelection() returns an object of this class):// https://developer.android.com/reference/androidx/recyclerview/selection/Selection
-        ArrayList<String> listofnames = new ArrayList<>();
-        for (int i = 0; i < listofitems.size(); i++){
-            listofnames.add(listofitems.get(i).getTitle());
-        }
         Intent i = new Intent(this, SecondActivity.class);
-        i.putStringArrayListExtra("Names",listofnames);
-        startActivity(i);
-        listofnames.clear();
+        startActivity(i); // Start SecondActivity
+
     }
 
     private void confirmation() {

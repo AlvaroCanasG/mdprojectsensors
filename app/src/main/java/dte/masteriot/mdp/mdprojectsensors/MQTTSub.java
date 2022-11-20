@@ -27,8 +27,6 @@ public class MQTTSub implements Runnable{//This class executes a thread to handl
         Message msg;
         Bundle msg_data;
         msg = creator.obtainMessage();
-
-
         msg_data = msg.getData();
 
 

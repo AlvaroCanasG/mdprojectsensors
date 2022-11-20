@@ -14,7 +14,7 @@ public class Item {
     private String Temperature;
     private String Date;
 
-    //Item(String title, String stringURI, String subtitle, Long key, int image, boolean status) {
+
         Item(String title, String Light, String Humidity, String Temperature,String Date, String subtitle, long key, int image , boolean status) {
         this.title = title;
         this.subtitle = subtitle;

@@ -31,11 +31,8 @@ public class MyOnItemActivatedListener implements OnItemActivatedListener {
     @Override
     public boolean onItemActivated(@NonNull ItemDetailsLookup.ItemDetails itemdetails,
                                    @NonNull MotionEvent e) {
-        // From [https://developer.android.com/reference/androidx/recyclerview/selection/OnItemActivatedListener]:
-        // "Called when an item is "activated". An item is activated, for example,
-        // when no selection exists and the user taps an item with her finger,
-        // or double clicks an item with a pointing device like a Mouse."
 
+//Send the information required for the ThirdActivity
         Intent i = new Intent(context, ThirdActivity.class);
         Item selecteditem = adapter.getItemAtPosition(itemdetails.getPosition());
              i.putExtra("Light", selecteditem.getLight());
