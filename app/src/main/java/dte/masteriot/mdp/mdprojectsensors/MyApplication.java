@@ -15,32 +15,14 @@ public class MyApplication extends Application {
     String MelonLight, MelonTemperature, MelonHumidity, MelonDate;
     String WatermelonLight, WatermelonTemperature, WatermelonHumidity, WatermelonDate;
 
-
-
-    private static final List<Item> listofitems = new ArrayList<Item>();
+    private static final List<Item> listofitems = new ArrayList<Item>(); // Create a global list of greenhouses
 
     public static List<Item> getListofitems(){
         return listofitems;
     }
 
-    public void setTomatoLight(String tomatoLight) {
-        TomatoLight = tomatoLight;
-    }
-
-    public void setTomatoTemperature(String tomatoTemperature) {
-        TomatoTemperature = tomatoTemperature;
-    }
-
-    public void setTomatoHumidity(String tomatoHumidity) {
-        TomatoHumidity = tomatoHumidity;
-    }
-
-    public void setTomatoDate(String tomatoDate) {
-        TomatoDate = tomatoDate;
-    }
-
     public MyApplication() {
-        initListOfItems();
+        initListOfItems(); //Initialize the array when the app starts
 
 
     }
@@ -57,135 +39,7 @@ public class MyApplication extends Application {
         listofitems.add(new Item("Watermelon", WatermelonLight,WatermelonHumidity, WatermelonTemperature,WatermelonDate, "February - March - April" , (long) 7 , R.drawable.watermelon , true ));
 
     }
-    /*
-    public String getTomatoLight() {
-        return TomatoLight;
-    }
-    public String getTomatoTemperature() {
-        return TomatoTemperature;
-    }
 
-    public String getTomatoHumidity() {
-        return TomatoHumidity;
-    }
-
-    public String getTomatoDate() {
-        return TomatoDate;
-    }
-
-    public String getEggplantLight() {
-        return EggplantLight;
-    }
-
-    public String getEggplantTemperature() {
-        return EggplantTemperature;
-    }
-
-    public String getEggplantHumidity() {
-        return EggplantHumidity;
-    }
-
-    public String getEggplantDate() {
-        return EggplantDate;
-    }
-
-    public String getPepperLight() {
-        return PepperLight;
-    }
-
-    public String getPepperTemperature() {
-        return PepperTemperature;
-    }
-
-    public String getPepperHumidity() {
-        return PepperHumidity;
-    }
-
-    public String getPepperDate() {
-        return PepperDate;
-    }
-
-    public String getGreenBeanLight() {
-        return GreenBeanLight;
-    }
-
-    public String getGreenBeanTemperature() {
-        return GreenBeanTemperature;
-    }
-
-    public String getGreenBeanHumidity() {
-        return GreenBeanHumidity;
-    }
-
-    public String getGreenBeanDate() {
-        return GreenBeanDate;
-    }
-
-    public String getZucchiniLight() {
-        return ZucchiniLight;
-    }
-
-    public String getZucchiniTemperature() {
-        return ZucchiniTemperature;
-    }
-
-    public String getZucchiniHumidity() {
-        return ZucchiniHumidity;
-    }
-
-    public String getZucchiniDate() {
-        return ZucchiniDate;
-    }
-
-    public String getCucumberLight() {
-        return CucumberLight;
-    }
-
-    public String getCucumberTemperature() {
-        return CucumberTemperature;
-    }
-
-    public String getCucumberHumidity() {
-        return CucumberHumidity;
-    }
-
-    public String getCucumberDate() {
-        return CucumberDate;
-    }
-
-    public String getMelonLight() {
-        return MelonLight;
-    }
-
-    public String getMelonTemperature() {
-        return MelonTemperature;
-    }
-
-    public String getMelonHumidity() {
-        return MelonHumidity;
-    }
-
-    public String getMelonDate() {
-        return MelonDate;
-    }
-
-    public String getWatermelonLight() {
-        return WatermelonLight;
-    }
-
-    public String getWatermelonTemperature() {
-        return WatermelonTemperature;
-    }
-
-    public String getWatermelonHumidity() {
-        return WatermelonHumidity;
-    }
-
-    public String getWatermelonDate() {
-        return WatermelonDate;
-    }
-
-     */
 }
 
 
